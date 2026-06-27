@@ -659,3 +659,13 @@ input[type="range"].slider::-moz-range-track{
   .footer-inner{ flex-direction: column; gap: 30px; }
   .footer-links{ gap: 40px; }
 }
+
+.nav-login-btn{
+    padding:10px 22px;
+    border-radius:12px;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-left:14px;
+}
