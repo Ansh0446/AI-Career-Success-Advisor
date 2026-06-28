@@ -1,6 +1,12 @@
 /* ============================================================
    AI Career Success Advisor — interactivity
    ============================================================ */
+import { auth } from "./firebase.js";
+
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 (function () {
   "use strict";
@@ -559,4 +565,39 @@ if (footerYear) {
         });
     });
   }
+  const authButton = document.getElementById("authButton");
+
+if (authButton) {
+
+    onAuthStateChanged(auth, (user) => {
+
+        if (user) {
+
+            authButton.textContent = "Logout";
+
+            authButton.href = "#";
+
+            authButton.onclick = async (e) => {
+
+                e.preventDefault();
+
+                await signOut(auth);
+
+                window.location.href = "/login";
+
+            };
+
+        } else {
+
+            authButton.textContent = "Login";
+
+            authButton.href = "/login";
+
+            authButton.onclick = null;
+
+        }
+
+    });
+
+}
 })();

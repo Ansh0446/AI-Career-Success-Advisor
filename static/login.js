@@ -576,11 +576,41 @@ return Promise.resolve();
 
 }
 
-  function handleForgotPassword(email) {
-    // TODO: integrate real password reset email (Flask route / Firebase)
-    console.log("handleForgotPassword placeholder called with:", email);
-    return new Promise((resolve) => setTimeout(resolve, 1000));
-  }
+  async function handleForgotPassword(email) {
+
+    try {
+
+        await sendPasswordResetEmail(auth, email);
+
+        return Promise.resolve();
+
+    } catch (error) {
+
+        console.log(error.code);
+        console.log(error.message);
+
+        let message = "Unable to send reset email.";
+
+        switch (error.code) {
+
+            case "auth/user-not-found":
+                message = "No account exists with this email.";
+                break;
+
+            case "auth/invalid-email":
+                message = "Invalid email address.";
+                break;
+
+            default:
+                message = error.message;
+
+        }
+
+        throw new Error(message);
+
+    }
+
+}
 
   /* ---------------- Init ---------------- */
   document.addEventListener("DOMContentLoaded", () => {
