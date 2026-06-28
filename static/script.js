@@ -186,42 +186,134 @@ if (footerYear) {
 
   var degreeSelect = document.getElementById("degree");
   var branchSelect = document.getElementById("branch");
+  var targetRoleSelect = document.getElementById("target_role");
 
   function populateBranches(degree) {
+
     branchSelect.innerHTML = "";
+
     var branches = BRANCH_MAP[degree];
+
     if (!branches) {
-      branchSelect.disabled = true;
-      var placeholder = document.createElement("option");
-      placeholder.value = "";
-      placeholder.disabled = true;
-      placeholder.selected = true;
-      placeholder.textContent = "Select degree first";
-      branchSelect.appendChild(placeholder);
-      return;
+
+        branchSelect.disabled = true;
+
+        var placeholder = document.createElement("option");
+
+        placeholder.value = "";
+
+        placeholder.disabled = true;
+
+        placeholder.selected = true;
+
+        placeholder.textContent = "Select degree first";
+
+        branchSelect.appendChild(placeholder);
+
+        return;
+
     }
+
     branchSelect.disabled = false;
+
     var ph = document.createElement("option");
+
     ph.value = "";
+
     ph.disabled = true;
+
     ph.selected = true;
+
     ph.textContent = "Select branch";
+
     branchSelect.appendChild(ph);
 
     branches.forEach(function (b) {
-      var opt = document.createElement("option");
-      opt.value = b;
-      opt.textContent = b;
-      branchSelect.appendChild(opt);
-    });
-  }
 
+        var opt = document.createElement("option");
+
+        opt.value = b;
+
+        opt.textContent = b;
+
+        branchSelect.appendChild(opt);
+
+    });
+
+}
+
+
+async function populateTargetRoles(degree, branch) {
+
+    if (!targetRoleSelect) return;
+
+    targetRoleSelect.innerHTML = "";
+
+    const placeholder = document.createElement("option");
+
+    placeholder.value = "";
+
+    placeholder.textContent = "Select Target Role";
+
+    placeholder.disabled = true;
+
+    placeholder.selected = true;
+
+    targetRoleSelect.appendChild(placeholder);
+
+    if (!degree || !branch) {
+
+        targetRoleSelect.disabled = true;
+
+        return;
+
+    }
+
+    try {
+
+        const response = await fetch("/static/data/career_data.json");
+
+        const data = await response.json();
+
+        const roles = data?.[degree]?.[branch]?.roles || [];
+
+        targetRoleSelect.disabled = false;
+
+        roles.forEach(role => {
+
+            const option = document.createElement("option");
+
+            option.value = role.title;
+
+            option.textContent = role.title;
+
+            targetRoleSelect.appendChild(option);
+
+        });
+
+    } catch (error) {
+
+        console.error("Unable to load career data:", error);
+
+    }
+
+}
   if (degreeSelect && branchSelect) {
     degreeSelect.addEventListener("change", function () {
       populateBranches(degreeSelect.value);
+      targetRoleSelect.disabled = true;
+      targetRoleSelect.innerHTML =
+          '<option selected disabled>Select Target Role</option>';
     });
   }
+branchSelect.addEventListener("change", function () {
 
+    populateTargetRoles(
+        degreeSelect.value,
+        branchSelect.value
+    );
+
+});
   /* ---------------------------------------------------------
      6. Sliders — live values + filled track
   --------------------------------------------------------- */

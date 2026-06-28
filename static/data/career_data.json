@@ -1,0 +1,328 @@
+{
+  "B.Tech": {
+    "AI&DS": {
+      "roles": [
+        { "title": "Machine Learning Engineer", "category": "Artificial Intelligence", "level": "Entry Level" },
+        { "title": "Data Scientist", "category": "Data", "level": "Entry Level" },
+        { "title": "AI Research Engineer", "category": "Research", "level": "Entry Level" },
+        { "title": "NLP Engineer", "category": "Artificial Intelligence", "level": "Entry Level" },
+        { "title": "Computer Vision Engineer", "category": "Artificial Intelligence", "level": "Entry Level" },
+        { "title": "Data Engineer", "category": "Data", "level": "Entry Level" },
+        { "title": "MLOps Engineer", "category": "Cloud", "level": "Entry Level" },
+        { "title": "Data Analytics Engineer", "category": "Data", "level": "Entry Level" }
+      ]
+    },
+    "CSE": {
+      "roles": [
+        { "title": "Software Engineer", "category": "Software", "level": "Entry Level" },
+        { "title": "Backend Developer", "category": "Software", "level": "Entry Level" },
+        { "title": "Frontend Developer", "category": "Software", "level": "Entry Level" },
+        { "title": "Full Stack Developer", "category": "Software", "level": "Entry Level" },
+        { "title": "DevOps Engineer", "category": "Cloud", "level": "Entry Level" },
+        { "title": "Cloud Engineer", "category": "Cloud", "level": "Entry Level" },
+        { "title": "Cyber Security Analyst", "category": "Cyber Security", "level": "Entry Level" },
+        { "title": "Database Engineer", "category": "Data", "level": "Entry Level" },
+        { "title": "QA Engineer", "category": "Software", "level": "Entry Level" },
+        { "title": "Site Reliability Engineer", "category": "Software", "level": "Entry Level" }
+      ]
+    },
+    "IT": {
+      "roles": [
+        { "title": "Systems Administrator", "category": "Software", "level": "Entry Level" },
+        { "title": "Network Engineer", "category": "Cyber Security", "level": "Entry Level" },
+        { "title": "Cloud Support Engineer", "category": "Cloud", "level": "Entry Level" },
+        { "title": "Database Administrator", "category": "Data", "level": "Entry Level" },
+        { "title": "IT Security Analyst", "category": "Cyber Security", "level": "Entry Level" },
+        { "title": "Technical Support Engineer", "category": "Software", "level": "Entry Level" },
+        { "title": "Web Developer", "category": "Software", "level": "Entry Level" },
+        { "title": "QA Test Engineer", "category": "Software", "level": "Entry Level" }
+      ]
+    },
+    "ECE": {
+      "roles": [
+        { "title": "Embedded Systems Engineer", "category": "Embedded", "level": "Entry Level" },
+        { "title": "VLSI Design Engineer", "category": "Electronics", "level": "Entry Level" },
+        { "title": "Electronics Hardware Engineer", "category": "Electronics", "level": "Entry Level" },
+        { "title": "RF Engineer", "category": "Electronics", "level": "Entry Level" },
+        { "title": "IoT Engineer", "category": "Embedded", "level": "Entry Level" },
+        { "title": "PCB Design Engineer", "category": "Electronics", "level": "Entry Level" },
+        { "title": "Firmware Engineer", "category": "Embedded", "level": "Entry Level" },
+        { "title": "Telecommunications Engineer", "category": "Electronics", "level": "Entry Level" }
+      ]
+    },
+    "Mechanical": {
+      "roles": [
+        { "title": "Design Engineer", "category": "Mechanical", "level": "Entry Level" },
+        { "title": "Manufacturing Engineer", "category": "Mechanical", "level": "Entry Level" },
+        { "title": "Quality Engineer", "category": "Mechanical", "level": "Entry Level" },
+        { "title": "Production Engineer", "category": "Mechanical", "level": "Entry Level" },
+        { "title": "CAD Engineer", "category": "Mechanical", "level": "Entry Level" },
+        { "title": "Maintenance Engineer", "category": "Mechanical", "level": "Entry Level" },
+        { "title": "Automotive Engineer", "category": "Mechanical", "level": "Entry Level" },
+        { "title": "Robotics Engineer", "category": "Mechanical", "level": "Entry Level" }
+      ]
+    },
+    "Civil": {
+      "roles": [
+        { "title": "Site Engineer", "category": "Civil", "level": "Entry Level" },
+        { "title": "Structural Engineer", "category": "Civil", "level": "Entry Level" },
+        { "title": "Civil Design Engineer", "category": "Civil", "level": "Entry Level" },
+        { "title": "Assistant Construction Manager", "category": "Management", "level": "Entry Level" },
+        { "title": "Quantity Surveyor", "category": "Civil", "level": "Entry Level" },
+        { "title": "Urban Planning Associate", "category": "Public Policy", "level": "Entry Level" },
+        { "title": "Geotechnical Engineer", "category": "Civil", "level": "Entry Level" },
+        { "title": "Project Engineer", "category": "Civil", "level": "Entry Level" }
+      ]
+    }
+  },
+  "BCA": {
+    "General": {
+      "roles": [
+        { "title": "Software Developer", "category": "Software", "level": "Entry Level" },
+        { "title": "Application Developer", "category": "Software", "level": "Entry Level" },
+        { "title": "Software QA Analyst", "category": "Software", "level": "Entry Level" },
+        { "title": "Application Support Engineer", "category": "Software", "level": "Entry Level" },
+        { "title": "Database Developer", "category": "Data", "level": "Entry Level" },
+        { "title": "Mobile App Developer", "category": "Software", "level": "Entry Level" },
+        { "title": "UI/UX Designer", "category": "Software", "level": "Entry Level" },
+        { "title": "Junior Programmer Analyst", "category": "Software", "level": "Entry Level" }
+      ]
+    },
+    "Data Science": {
+      "roles": [
+        { "title": "Data Analyst", "category": "Data", "level": "Entry Level" },
+        { "title": "Junior Data Scientist", "category": "Data", "level": "Entry Level" },
+        { "title": "Business Intelligence Developer", "category": "Analytics", "level": "Entry Level" },
+        { "title": "Data Visualization Specialist", "category": "Data", "level": "Entry Level" },
+        { "title": "Machine Learning Associate", "category": "Artificial Intelligence", "level": "Entry Level" },
+        { "title": "ETL Developer", "category": "Data", "level": "Entry Level" },
+        { "title": "Data Quality Analyst", "category": "Data", "level": "Entry Level" },
+        { "title": "Statistical Analyst", "category": "Analytics", "level": "Entry Level" }
+      ]
+    },
+    "Cyber Security": {
+      "roles": [
+        { "title": "Security Analyst", "category": "Cyber Security", "level": "Entry Level" },
+        { "title": "SOC Analyst", "category": "Cyber Security", "level": "Entry Level" },
+        { "title": "Penetration Tester", "category": "Cyber Security", "level": "Entry Level" },
+        { "title": "Information Security Specialist", "category": "Cyber Security", "level": "Entry Level" },
+        { "title": "Vulnerability Analyst", "category": "Cyber Security", "level": "Entry Level" },
+        { "title": "Cyber Security Consultant", "category": "Cyber Security", "level": "Entry Level" },
+        { "title": "Incident Response Analyst", "category": "Cyber Security", "level": "Entry Level" },
+        { "title": "Network Security Engineer", "category": "Cyber Security", "level": "Entry Level" }
+      ]
+    },
+    "Cloud Computing": {
+      "roles": [
+        { "title": "Cloud Support Associate", "category": "Cloud", "level": "Entry Level" },
+        { "title": "Cloud Operations Engineer", "category": "Cloud", "level": "Entry Level" },
+        { "title": "Junior Cloud Engineer", "category": "Cloud", "level": "Entry Level" },
+        { "title": "Cloud Infrastructure Associate", "category": "Cloud", "level": "Entry Level" },
+        { "title": "DevOps Associate", "category": "Cloud", "level": "Entry Level" },
+        { "title": "Cloud Systems Administrator", "category": "Cloud", "level": "Entry Level" },
+        { "title": "Cloud Security Associate", "category": "Cloud", "level": "Entry Level" },
+        { "title": "Virtualization Engineer", "category": "Cloud", "level": "Entry Level" }
+      ]
+    }
+  },
+  "BBA": {
+    "Finance": {
+      "roles": [
+        { "title": "Financial Analyst", "category": "Finance", "level": "Entry Level" },
+        { "title": "Investment Banking Analyst", "category": "Finance", "level": "Entry Level" },
+        { "title": "Credit Analyst", "category": "Finance", "level": "Entry Level" },
+        { "title": "Equity Research Analyst", "category": "Finance", "level": "Entry Level" },
+        { "title": "Financial Planning Analyst", "category": "Finance", "level": "Entry Level" },
+        { "title": "Risk Analyst", "category": "Finance", "level": "Entry Level" },
+        { "title": "Treasury Analyst", "category": "Finance", "level": "Entry Level" },
+        { "title": "Wealth Management Associate", "category": "Finance", "level": "Entry Level" }
+      ]
+    },
+    "Marketing": {
+      "roles": [
+        { "title": "Marketing Executive", "category": "Marketing", "level": "Entry Level" },
+        { "title": "Digital Marketing Specialist", "category": "Marketing", "level": "Entry Level" },
+        { "title": "Brand Associate", "category": "Marketing", "level": "Entry Level" },
+        { "title": "Social Media Manager", "category": "Marketing", "level": "Entry Level" },
+        { "title": "Market Research Analyst", "category": "Research", "level": "Entry Level" },
+        { "title": "SEO Specialist", "category": "Marketing", "level": "Entry Level" },
+        { "title": "Content Marketing Strategist", "category": "Content", "level": "Entry Level" },
+        { "title": "Product Marketing Associate", "category": "Marketing", "level": "Entry Level" }
+      ]
+    },
+    "HR": {
+      "roles": [
+        { "title": "HR Executive", "category": "Human Resources", "level": "Entry Level" },
+        { "title": "Talent Acquisition Specialist", "category": "Human Resources", "level": "Entry Level" },
+        { "title": "HR Business Partner", "category": "Human Resources", "level": "Entry Level" },
+        { "title": "Compensation and Benefits Analyst", "category": "Human Resources", "level": "Entry Level" },
+        { "title": "Learning and Development Associate", "category": "Human Resources", "level": "Entry Level" },
+        { "title": "HR Generalist", "category": "Human Resources", "level": "Entry Level" },
+        { "title": "Employee Relations Specialist", "category": "Human Resources", "level": "Entry Level" },
+        { "title": "Recruitment Coordinator", "category": "Human Resources", "level": "Entry Level" }
+      ]
+    },
+    "Business Analytics": {
+      "roles": [
+        { "title": "Business Analyst", "category": "Business", "level": "Entry Level" },
+        { "title": "Data Analytics Associate", "category": "Analytics", "level": "Entry Level" },
+        { "title": "Operations Analyst", "category": "Analytics", "level": "Entry Level" },
+        { "title": "BI Reporting Analyst", "category": "Analytics", "level": "Entry Level" },
+        { "title": "Strategy Analyst", "category": "Management", "level": "Entry Level" },
+        { "title": "Process Improvement Analyst", "category": "Analytics", "level": "Entry Level" },
+        { "title": "Supply Chain Analyst", "category": "Analytics", "level": "Entry Level" },
+        { "title": "Decision Support Analyst", "category": "Analytics", "level": "Entry Level" }
+      ]
+    }
+  },
+  "B.Com": {
+    "General": {
+      "roles": [
+        { "title": "Accounts Executive", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Junior Accountant", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Billing Executive", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Finance Executive", "category": "Finance", "level": "Entry Level" },
+        { "title": "Bank Probationary Officer", "category": "Finance", "level": "Entry Level" },
+        { "title": "Tax Assistant", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Audit Assistant", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Payroll Executive", "category": "Accounting", "level": "Entry Level" }
+      ]
+    },
+    "Finance": {
+      "roles": [
+        { "title": "Financial Accountant", "category": "Finance", "level": "Entry Level" },
+        { "title": "Budget Analyst", "category": "Finance", "level": "Entry Level" },
+        { "title": "Loan Officer", "category": "Finance", "level": "Entry Level" },
+        { "title": "Insurance Analyst", "category": "Finance", "level": "Entry Level" },
+        { "title": "Corporate Finance Analyst", "category": "Finance", "level": "Entry Level" },
+        { "title": "Mutual Fund Analyst", "category": "Finance", "level": "Entry Level" },
+        { "title": "Financial Risk Analyst", "category": "Finance", "level": "Entry Level" },
+        { "title": "Stock Market Analyst", "category": "Finance", "level": "Entry Level" }
+      ]
+    },
+    "Accounting": {
+      "roles": [
+        { "title": "Staff Accountant", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Accounts Payable Specialist", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Accounts Receivable Specialist", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Cost Accountant", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Bookkeeper", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Internal Auditor", "category": "Accounting", "level": "Entry Level" },
+        { "title": "General Ledger Accountant", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Financial Reporting Analyst", "category": "Accounting", "level": "Entry Level" }
+      ]
+    },
+    "Taxation": {
+      "roles": [
+        { "title": "Tax Analyst", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Tax Consultant", "category": "Accounting", "level": "Entry Level" },
+        { "title": "GST Practitioner", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Income Tax Officer Assistant", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Transfer Pricing Analyst", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Indirect Tax Analyst", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Tax Compliance Associate", "category": "Accounting", "level": "Entry Level" },
+        { "title": "Corporate Tax Associate", "category": "Accounting", "level": "Entry Level" }
+      ]
+    }
+  },
+  "BA": {
+    "Economics": {
+      "roles": [
+        { "title": "Economic Analyst", "category": "Research", "level": "Entry Level" },
+        { "title": "Policy Research Associate", "category": "Public Policy", "level": "Entry Level" },
+        { "title": "Economic Researcher", "category": "Research", "level": "Entry Level" },
+        { "title": "Data Research Analyst", "category": "Research", "level": "Entry Level" },
+        { "title": "Market Analyst", "category": "Analytics", "level": "Entry Level" },
+        { "title": "Public Policy Analyst", "category": "Public Policy", "level": "Entry Level" },
+        { "title": "Statistical Research Assistant", "category": "Research", "level": "Entry Level" },
+        { "title": "Development Economics Associate", "category": "Public Policy", "level": "Entry Level" }
+      ]
+    },
+    "English": {
+      "roles": [
+        { "title": "Content Writer", "category": "Content", "level": "Entry Level" },
+        { "title": "Copywriter", "category": "Content", "level": "Entry Level" },
+        { "title": "Editorial Assistant", "category": "Content", "level": "Entry Level" },
+        { "title": "Technical Writer", "category": "Content", "level": "Entry Level" },
+        { "title": "Content Strategist", "category": "Content", "level": "Entry Level" },
+        { "title": "Proofreader", "category": "Content", "level": "Entry Level" },
+        { "title": "Communications Associate", "category": "Content", "level": "Entry Level" },
+        { "title": "Social Media Content Creator", "category": "Content", "level": "Entry Level" }
+      ]
+    },
+    "Political Science": {
+      "roles": [
+        { "title": "Policy Analyst", "category": "Public Policy", "level": "Entry Level" },
+        { "title": "Legislative Assistant", "category": "Public Policy", "level": "Entry Level" },
+        { "title": "Public Affairs Associate", "category": "Public Policy", "level": "Entry Level" },
+        { "title": "Political Research Associate", "category": "Research", "level": "Entry Level" },
+        { "title": "Government Relations Associate", "category": "Public Policy", "level": "Entry Level" },
+        { "title": "Election Campaign Coordinator", "category": "Public Policy", "level": "Entry Level" },
+        { "title": "NGO Program Associate", "category": "Public Policy", "level": "Entry Level" },
+        { "title": "International Relations Analyst", "category": "Public Policy", "level": "Entry Level" }
+      ]
+    },
+    "Psychology": {
+      "roles": [
+        { "title": "HR Assistant", "category": "Human Resources", "level": "Entry Level" },
+        { "title": "Talent Development Associate", "category": "Human Resources", "level": "Entry Level" },
+        { "title": "Behavioral Research Assistant", "category": "Research", "level": "Entry Level" },
+        { "title": "User Experience Researcher", "category": "Research", "level": "Entry Level" },
+        { "title": "Market Research Associate", "category": "Research", "level": "Entry Level" },
+        { "title": "Organizational Development Associate", "category": "Human Resources", "level": "Entry Level" },
+        { "title": "Training Coordinator", "category": "Human Resources", "level": "Entry Level" },
+        { "title": "Wellness Program Coordinator", "category": "Human Resources", "level": "Entry Level" }
+      ]
+    }
+  },
+  "Law": {
+    "Corporate": {
+      "roles": [
+        { "title": "Corporate Lawyer", "category": "Law", "level": "Entry Level" },
+        { "title": "Legal Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Mergers and Acquisitions Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Contract Compliance Analyst", "category": "Law", "level": "Entry Level" },
+        { "title": "Legal Counsel Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Corporate Compliance Officer", "category": "Law", "level": "Entry Level" },
+        { "title": "Company Secretary Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Securities Law Associate", "category": "Law", "level": "Entry Level" }
+      ]
+    },
+    "Criminal": {
+      "roles": [
+        { "title": "Criminal Defense Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Public Prosecutor Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Legal Aid Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Litigation Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Paralegal (Criminal Law)", "category": "Law", "level": "Entry Level" },
+        { "title": "Legal Researcher (Criminal Law)", "category": "Research", "level": "Entry Level" },
+        { "title": "Victim Advocacy Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Forensic Legal Associate", "category": "Law", "level": "Entry Level" }
+      ]
+    },
+    "Civil": {
+      "roles": [
+        { "title": "Civil Litigation Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Property Law Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Family Law Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Legal Consultant (Civil Law)", "category": "Law", "level": "Entry Level" },
+        { "title": "Contract Law Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Real Estate Legal Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Civil Law Paralegal", "category": "Law", "level": "Entry Level" },
+        { "title": "Dispute Resolution Associate", "category": "Law", "level": "Entry Level" }
+      ]
+    },
+    "Constitutional": {
+      "roles": [
+        { "title": "Constitutional Law Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Human Rights Law Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Judicial Clerk", "category": "Law", "level": "Entry Level" },
+        { "title": "Public Interest Litigation Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Legal Policy Associate", "category": "Public Policy", "level": "Entry Level" },
+        { "title": "Constitutional Researcher", "category": "Research", "level": "Entry Level" },
+        { "title": "Legislative Drafting Associate", "category": "Law", "level": "Entry Level" },
+        { "title": "Civil Liberties Associate", "category": "Law", "level": "Entry Level" }
+      ]
+    }
+  }
+}
