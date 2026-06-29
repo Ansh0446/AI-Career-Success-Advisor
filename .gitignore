@@ -4,3 +4,5 @@ __pycache__/
 .vscode/
 uploads/*
 !uploads/.gitkeep
+credentials/ 
+firebase_admin_key.json

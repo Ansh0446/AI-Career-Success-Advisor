@@ -4,6 +4,7 @@ import joblib
 from mentor import generate_roadmap as ai_generate_roadmap
 from resume_analyzer import analyze_resume
 import os
+import json
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -59,6 +60,38 @@ def login():
 # ==========================================================
 # PREDICTION ROUTE
 # ==========================================================
+
+@app.route("/api/resources/<path:role>", methods=["GET"])
+def get_resources(role):
+    try:
+        resource_path = os.path.join(
+            app.static_folder,
+            "data",
+            "career_resources.json"
+        )
+
+        with open(resource_path, "r", encoding="utf-8") as file:
+            resources = json.load(file)
+
+        role = role.strip()
+
+        if role not in resources:
+            return jsonify({
+                "success": False,
+                "message": f"No resources found for '{role}'."
+            }), 404
+
+        return jsonify({
+            "success": True,
+            "role": role,
+            "resources": resources[role]
+        })
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "message": str(e)
+        }), 500
 
 @app.route("/predict", methods=["POST"])
 def predict():

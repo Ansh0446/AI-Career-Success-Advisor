@@ -478,6 +478,11 @@ branchSelect.addEventListener("change", function () {
       el.classList.add("in-view");
     });
     resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    const selectedRole = document.getElementById("target_role").value;
+
+      if (selectedRole) {
+        loadResources(selectedRole);
+  }
   }
 
   function animateNumber(el, from, to, duration, suffix) {
