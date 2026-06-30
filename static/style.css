@@ -671,7 +671,7 @@ input[type="range"].slider::-moz-range-track{
 }
 
 /* ==========================================================
-   Personalized Career Resources
+   Personalized Career Resources — Premium SaaS Dashboard
 ========================================================== */
 
 .career-resources-wrapper{
@@ -686,68 +686,346 @@ input[type="range"].slider::-moz-range-track{
 .resource-placeholder{
     padding:45px;
     text-align:center;
-    border:1px dashed rgba(255,255,255,.15);
+    border:1px dashed var(--border-strong);
     border-radius:18px;
     opacity:.8;
+    color: var(--text-2);
+    font-size: .95rem;
 }
 
+/* ---------- AI Summary Card ---------- */
+#resourcesSummary:empty{ display:none; }
+
+.resources-ai-summary{
+    position: relative;
+    display:flex;
+    align-items:flex-start;
+    gap:18px;
+    padding:24px 26px;
+    border-radius: var(--radius-lg);
+    background: var(--gradient-soft);
+    border: 1px solid rgba(168,85,247,.28);
+    margin-top: 30px;
+    overflow:hidden;
+    animation: resourceFadeUp .6s var(--ease) both;
+}
+
+.resources-ai-summary::before{
+    content:'';
+    position:absolute; inset:0;
+    background: radial-gradient(600px 200px at 0% 0%, rgba(168,85,247,.18), transparent 60%);
+    pointer-events:none;
+}
+
+.resources-ai-summary-icon{
+    flex-shrink:0;
+    width:44px; height:44px;
+    border-radius:13px;
+    display:flex; align-items:center; justify-content:center;
+    background: var(--gradient);
+    color:#fff;
+    font-size:1.2rem;
+    box-shadow: var(--shadow-glow);
+    position:relative; z-index:1;
+}
+
+.resources-ai-summary-body{ position:relative; z-index:1; flex:1; min-width:0; }
+
+.resources-ai-summary-label{
+    font-family: var(--font-mono);
+    font-size:.68rem;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color: var(--purple);
+    margin-bottom:6px;
+}
+
+.resources-ai-summary-text{
+    font-size:.96rem;
+    line-height:1.6;
+    color: var(--text-1);
+}
+
+.resources-ai-summary-text strong{ color: var(--purple); }
+
+/* ---------- Step Indicator ---------- */
+.resources-steps{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin: 30px 2px 6px;
+    overflow-x:auto;
+    padding-bottom:6px;
+    scrollbar-width:none;
+}
+.resources-steps::-webkit-scrollbar{ display:none; }
+
+.resources-step{
+    display:flex; align-items:center; gap:8px;
+    flex-shrink:0;
+    padding:7px 14px 7px 7px;
+    border-radius:100px;
+    background: var(--surface);
+    border:1px solid var(--border);
+    font-size:.78rem;
+    font-weight:600;
+    color: var(--text-2);
+    white-space:nowrap;
+}
+
+.resources-step-num{
+    width:22px; height:22px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--font-mono);
+    font-size:.68rem;
+    font-weight:700;
+    background: var(--surface-strong);
+    color: var(--text-2);
+}
+
+.resources-step.is-priority{
+    border-color: rgba(168,85,247,.4);
+    color: var(--text-1);
+}
+.resources-step.is-priority .resources-step-num{
+    background: var(--gradient);
+    color:#fff;
+}
+
+.resources-step-connector{
+    width:18px; height:1px;
+    background: var(--border-strong);
+    flex-shrink:0;
+}
+
+/* ---------- Grid ---------- */
 #resourcesGrid{
-
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(330px,1fr));
     gap:22px;
-    margin-top:30px;
-
+    margin-top:18px;
 }
 
+/* ---------- Category Card ---------- */
 .career-resource-card{
-
-    background:rgba(255,255,255,.04);
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:18px;
-    padding:22px;
-    transition:.3s;
-
+    position: relative;
+    background: var(--surface);
+    border:1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding:24px;
+    transition: transform .3s var(--ease), border-color .3s var(--ease), box-shadow .3s var(--ease), background .3s var(--ease);
+    animation: resourceFadeUp .55s var(--ease) both;
+    display:flex;
+    flex-direction:column;
 }
 
 .career-resource-card:hover{
-
-    transform:translateY(-5px);
-
+    transform: translateY(-6px);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card);
 }
 
 .career-resource-card h3{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:6px;
+    font-size:1.05rem;
+}
 
-    margin-bottom:18px;
+.career-resource-card .resource-category-count{
+    margin-left:auto;
+    font-family: var(--font-mono);
+    font-size:.68rem;
+    font-weight:600;
+    color: var(--text-3);
+    background: var(--surface-strong);
+    border:1px solid var(--border);
+    padding:3px 9px;
+    border-radius:100px;
+}
 
+.resource-icon{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:38px; height:38px;
+    border-radius:11px;
+    background: var(--gradient-soft);
+    color: var(--purple);
+    flex-shrink:0;
 }
 
 .career-resource-card ul{
-
     list-style:none;
     padding:0;
-    margin:0;
-
+    margin:14px 0 0;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
 }
 
-.career-resource-card li{
-
-    margin-bottom:14px;
-
+/* ---------- Resource Item (rich card) ---------- */
+.resource-item{
+    position:relative;
+    border:1px solid var(--border);
+    background: var(--bg-soft);
+    border-radius: var(--radius-md);
+    padding:16px 16px 14px;
+    transition: border-color .25s var(--ease), transform .25s var(--ease), background .25s var(--ease);
 }
 
-.career-resource-card a{
+.resource-item:hover{
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+    background: var(--surface-strong);
+}
 
-    text-decoration:none;
-    color: var(--purple);
+.resource-item.is-best{
+    border-color: rgba(168,85,247,.5);
+    background: linear-gradient(180deg, rgba(168,85,247,.08), transparent 60%), var(--bg-soft);
+}
+
+.resource-best-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    font-family: var(--font-mono);
+    font-size:.62rem;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:#fff;
+    background: var(--gradient);
+    padding:4px 9px 4px 7px;
+    border-radius:100px;
+    margin-bottom:10px;
+    box-shadow: 0 4px 14px rgba(109,93,252,.4);
+}
+
+.resource-item-top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:6px;
+}
+
+.resource-item-title{
     font-weight:600;
-
+    font-size:.94rem;
+    color: var(--text-1);
+    line-height:1.4;
 }
 
-.career-resource-card small{
+.resource-meta-row{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:6px;
+    margin: 8px 0 10px;
+}
 
-    display:block;
-    margin-top:3px;
-    opacity:.75;
+.resource-source-tag,
+.resource-difficulty-tag,
+.resource-time-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    font-size:.66rem;
+    font-weight:700;
+    letter-spacing:.02em;
+    padding:3px 8px;
+    border-radius:100px;
+    font-family: var(--font-mono);
+    white-space:nowrap;
+}
 
+.resource-source-tag{
+    background: var(--surface-strong);
+    border:1px solid var(--border);
+    color: var(--text-2);
+    text-transform: uppercase;
+}
+
+.resource-difficulty-tag{ border:1px solid transparent; }
+.resource-difficulty-tag.diff-beginner{
+    background: rgba(34,197,94,.12); color: var(--green); border-color: rgba(34,197,94,.3);
+}
+.resource-difficulty-tag.diff-intermediate{
+    background: rgba(245,158,11,.12); color: var(--orange); border-color: rgba(245,158,11,.3);
+}
+.resource-difficulty-tag.diff-advanced{
+    background: rgba(239,68,68,.12); color: var(--red); border-color: rgba(239,68,68,.3);
+}
+
+.resource-time-tag{
+    background: var(--surface-strong);
+    border:1px solid var(--border);
+    color: var(--text-3);
+}
+
+.resource-item-desc{
+    font-size:.82rem;
+    line-height:1.55;
+    color: var(--text-2);
+    margin-bottom:14px;
+}
+
+.resource-cta{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    font-size:.78rem;
+    font-weight:700;
+    padding:8px 16px;
+    border-radius:10px;
+    background: var(--surface-strong);
+    border:1px solid var(--border);
+    color: var(--text-1);
+    transition: background .25s var(--ease), border-color .25s var(--ease), transform .2s var(--ease), color .25s var(--ease);
+}
+
+.resource-cta:hover{
+    background: var(--gradient);
+    border-color: transparent;
+    color:#fff;
+    transform: translateX(2px);
+}
+
+.resource-cta svg{ width:13px; height:13px; flex-shrink:0; }
+
+.resource-item-static{
+    font-weight:600;
+    font-size:.94rem;
+    color: var(--text-1);
+}
+
+/* ---------- Animations ---------- */
+@keyframes resourceFadeUp{
+    from{ opacity:0; transform: translateY(16px); }
+    to{ opacity:1; transform:none; }
+}
+
+@keyframes resourcePulse{
+    0%, 100%{ box-shadow: 0 0 0 0 rgba(168,85,247,.35); }
+    50%{ box-shadow: 0 0 0 6px rgba(168,85,247,0); }
+}
+
+.resource-best-badge{ animation: resourcePulse 2.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce){
+    .career-resource-card,
+    .resources-ai-summary,
+    .resource-best-badge{ animation:none; }
+    .career-resource-card:hover,
+    .resource-item:hover,
+    .resource-cta:hover{ transform:none; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px){
+    #resourcesGrid{ grid-template-columns:1fr; }
+    .resources-ai-summary{ flex-direction:column; padding:20px; }
+    .resource-meta-row{ gap:5px; }
 }
