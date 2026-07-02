@@ -209,6 +209,110 @@ img,svg{ display:block; }
 .hero-stat-label{ font-size: .74rem; color: var(--text-3); }
 .hero-stat-divider{ width:1px; height: 28px; background: var(--border-strong); }
 
+/* ==========================================================
+   Smart Hero States
+========================================================== */
+
+.hero-state{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:22px;
+    transition:.4s ease;
+}
+.hidden{
+    display:none !important;
+}
+
+/* ---------- Default Features ---------- */
+
+.hero-feature{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+.hero-feature-icon{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:var(--gradient);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:1rem;
+    box-shadow:var(--shadow-glow);
+}
+.hero-feature-text{
+    display:flex;
+    flex-direction:column;
+    text-align:left;
+}
+.hero-feature-text strong{
+    font-size:.95rem;
+    color:var(--text-1);
+}
+.hero-feature-text span{
+    font-size:.75rem;
+    color:var(--text-3);
+}
+.hero-feature-divider{
+    width:1px;
+    height:42px;
+    background:var(--border-strong);
+}
+
+/* ---------- Dashboard ---------- */
+
+.hero-state-dashboard{
+    gap:18px;
+}
+.hero-stat-card{
+    min-width:170px;
+    padding:20px;
+    border-radius:18px;
+    background:var(--surface-strong);
+    border:1px solid var(--border);
+    backdrop-filter:blur(10px);
+    transition:.3s;
+}
+.hero-stat-card:hover{
+    transform:translateY(-4px);
+    border-color:var(--purple);
+}
+.hero-stat-number{
+    font-family:var(--font-display);
+    font-size:2rem;
+    font-weight:700;
+    margin-bottom:6px;
+
+    background:var(--gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+}
+.hero-stat-title{
+    font-size:.8rem;
+    color:var(--text-3);
+    letter-spacing:.03em;
+}
+
+/* ---------- Responsive ---------- */
+
+@media(max-width:900px){
+.hero-state{
+    flex-direction:column;
+    gap:18px;
+}
+.hero-feature-divider{
+    display:none;
+}
+.hero-stat-card{
+    width:100%;
+}
+}
 .hero-fade{
   position:absolute; left:0; right:0; bottom:0; height: 140px;
   background: linear-gradient(to bottom, transparent, var(--bg));
@@ -1028,4 +1132,69 @@ input[type="range"].slider::-moz-range-track{
     #resourcesGrid{ grid-template-columns:1fr; }
     .resources-ai-summary{ flex-direction:column; padding:20px; }
     .resource-meta-row{ gap:5px; }
+}
+.ai-overlay{
+position:fixed;
+inset:0;
+background:rgba(10,10,20,.65);
+backdrop-filter:blur(10px);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+transition:.3s;
+}
+.ai-overlay.hidden{
+display:none;
+}
+.ai-popup{
+width:480px;
+max-width:92%;
+padding:40px;
+border-radius:28px;
+background:#11131d;
+border:1px solid rgba(255,255,255,.08);
+box-shadow:0 0 50px rgba(120,80,255,.25);
+text-align:center;
+animation:popup .4s ease;
+}
+@keyframes popup{
+from{
+opacity:0;
+transform:translateY(20px) scale(.95);
+}
+to{
+opacity:1;
+transform:none;
+}
+}
+.ai-icon{
+font-size:52px;
+margin-bottom:18px;
+}
+.progress-bar{
+height:10px;
+background:#222;
+border-radius:999px;
+overflow:hidden;
+margin:22px 0 10px;
+}
+.progress-fill{
+height:100%;
+width:0;
+background:linear-gradient(90deg,#7d5cff,#5ac8fa);
+transition:.25s;
+}
+.progress-percent{
+font-size:24px;
+font-weight:700;
+margin-bottom:22px;
+}
+.ai-steps{
+text-align:left;
+display:flex;
+flex-direction:column;
+gap:12px;
+font-size:15px;
+opacity:.95;
 }

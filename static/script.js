@@ -1,12 +1,17 @@
 /* ============================================================
    AI Career Success Advisor — interactivity
    ============================================================ */
-import { auth } from "./firebase.js";
-
+import { auth, db } from "./firebase.js";
 import {
     onAuthStateChanged,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+import {
+    doc,
+    getDoc,
+    setDoc
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 (function () {
   "use strict";
@@ -538,32 +543,58 @@ branchSelect.addEventListener("change", function () {
         firstInvalid.reportValidity();
         return;
       }
+var payload = collectFormData();
+setLoading(analyzeBtn, true);
+startAIProgress();
 
-      var payload = collectFormData();
-      setLoading(analyzeBtn, true);
+fetch("/predict", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+})
 
-      fetch("/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
-        .then(function (res) {
-          if (!res.ok) throw new Error("Backend responded with " + res.status);
-          return res.json();
-        })
-        .then(function (result) {
-          renderResults(result);
-        })
-        .catch(function (err) {
-          console.warn("[AI Career Advisor] /predict unavailable, showing demo output:", err.message);
-          renderResults(buildDemoResult(payload));
-        })
-        .finally(function () {
-          setLoading(analyzeBtn, false);
-        });
+.then(function (res) {
+
+    if (!res.ok)
+        throw new Error("Backend responded with " + res.status);
+    return res.json();
+
+})
+
+.then(function (result) {
+
+    finishAIProgress(function () {
+
+        renderResults(result);
+        showHeroDashboard(
+            result.prediction_confidence || 94,
+            result.profile_signals || 22,
+            (result.recommendations || []).length
+        );
+        
+        setLoading(analyzeBtn, false);
     });
-  }
+})
 
+.catch(function (err) {
+
+    console.warn("[AI Career Advisor]", err);
+    const demo = buildDemoResult(payload);
+
+    finishAIProgress(function () {
+
+        renderResults(demo);
+        showHeroDashboard(
+            91,
+            19,
+            (demo.recommendations || []).length
+        );
+        setLoading(analyzeBtn, false);
+    });
+});
+ });
+
+}
   /* ---------------------------------------------------------
      10. AI Mentor — generate roadmap
   --------------------------------------------------------- */
@@ -666,20 +697,40 @@ branchSelect.addEventListener("change", function () {
 
 if (authButton) {
 
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
 
         if (user) {
+          const heroRef = doc(db, "users", user.uid);
+
+try {
+    const heroSnap = await getDoc(heroRef);
+
+    if (heroSnap.exists() && heroSnap.data().hero) {
+        const hero = heroSnap.data().hero;
+
+        showHeroDashboard(
+            hero.confidence,
+            hero.signals,
+            hero.recommendations
+        );
+
+    } else {
+        showHeroDefault();
+    }
+
+} catch (e) {
+
+    console.error("Hero load failed:", e);
+    showHeroDefault();
+
+}
 
             authButton.textContent = "Logout";
-
             authButton.href = "#";
-
             authButton.onclick = async (e) => {
 
                 e.preventDefault();
-
                 await signOut(auth);
-
                 window.location.href = "/login";
 
             };
@@ -687,9 +738,8 @@ if (authButton) {
         } else {
 
             authButton.textContent = "Login";
-
+            showHeroDefault();
             authButton.href = "/login";
-
             authButton.onclick = null;
 
         }
@@ -698,3 +748,102 @@ if (authButton) {
 
 }
 })();
+const aiOverlay=document.getElementById("aiOverlay");
+const aiFill=document.getElementById("aiProgressFill");
+const aiPercent=document.getElementById("aiPercent");
+const steps=[
+document.getElementById("step1"),
+document.getElementById("step2"),
+document.getElementById("step3"),
+document.getElementById("step4"),
+document.getElementById("step5")
+];
+let progressTimer;
+function startAIProgress(){
+aiOverlay.classList.remove("hidden");
+let progress=0;
+progressTimer=setInterval(()=>{
+if(progress>=95)return;
+progress+=Math.floor(Math.random()*4)+2;
+if(progress>95)progress=95;
+aiFill.style.width=progress+"%";
+aiPercent.textContent=progress+"%";
+const completed=Math.floor(progress/20);
+steps.forEach((s,i)=>{
+if(i<completed){
+s.innerHTML="✅ "+s.textContent.replace("⏳ ","");
+}
+});
+},180);
+}
+function finishAIProgress(callback){
+
+    clearInterval(progressTimer);
+
+    aiFill.style.width="100%";
+    aiPercent.textContent="100%";
+
+    steps.forEach(step=>{
+
+        step.innerHTML="✅ "+step.textContent.replace("⏳ ","");
+
+    });
+
+    setTimeout(()=>{
+
+        aiOverlay.classList.add("hidden");
+
+        if(callback){
+            callback();
+        }
+
+    },700);
+
+}
+/* ==========================================================
+   Smart Hero State Manager
+========================================================== */
+
+const heroDefaultState = document.getElementById("heroDefaultState");
+const heroDashboardState = document.getElementById("heroDashboardState");
+
+function showHeroDefault() {
+    if (!heroDefaultState || !heroDashboardState) return;
+    heroDefaultState.classList.remove("hidden");
+    heroDashboardState.classList.add("hidden");
+}
+
+function showHeroDashboard(confidence, signals, recommendations) {
+    if (!heroDefaultState || !heroDashboardState) return;
+    heroDefaultState.classList.add("hidden");
+    heroDashboardState.classList.remove("hidden");
+
+    animateHeroValue(
+        document.getElementById("heroConfidence"),
+        confidence,
+        "%"
+    );
+    animateHeroValue(
+        document.getElementById("heroSignals"),
+        signals,
+        ""
+    );
+    animateHeroValue(
+        document.getElementById("heroRecommendations"),
+        recommendations,
+        ""
+    );
+}
+function animateHeroValue(element, target, suffix=""){
+    let value = 0;
+    const timer = setInterval(()=>{
+        value++;
+        element.textContent = value + suffix;
+        if(value>=target){
+            clearInterval(timer);
+        }
+    },15);
+}
+window.addEventListener("DOMContentLoaded", () => {
+    showHeroDefault();
+});

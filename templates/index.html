@@ -14,7 +14,33 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='resume_section.css') }}">
 </head>
 <body>
+<div id="aiOverlay" class="ai-overlay hidden">
+    <div class="ai-popup">
+        <div class="ai-icon">
+            🤖
+        </div>
+        <h2>AI Analysis in Progress</h2>
+        <div class="progress-bar">
+            <div
+                id="aiProgressFill"
+                class="progress-fill">
+            </div>
+        </div>
+        <div
+            id="aiPercent"
+            class="progress-percent">
+            0%
+        </div>
+        <div class="ai-steps">
+            <div id="step1">⏳ Collecting Academic Profile</div>
+            <div id="step2">⏳ Processing Resume</div>
+            <div id="step3">⏳ Running ML Models</div>
+            <div id="step4">⏳ Predicting Career</div>
+            <div id="step5">⏳ Building Roadmap</div>
 
+        </div>
+    </div>
+</div>
 <canvas id="bg-network"></canvas>
 
 <!-- ============ NAVBAR ============ -->
@@ -70,23 +96,69 @@
       <a href="#mentor" class="btn btn-ghost">Generate AI Roadmap</a>
     </div>
 
-    <div class="hero-stats reveal">
-      <div class="hero-stat">
-        <span class="hero-stat-value">28</span>
-        <span class="hero-stat-label">signals analyzed</span>
-      </div>
-      <div class="hero-stat-divider"></div>
-      <div class="hero-stat">
-        <span class="hero-stat-value">4</span>
-        <span class="hero-stat-label">trained ML models</span>
-      </div>
-      <div class="hero-stat-divider"></div>
-      <div class="hero-stat">
-        <span class="hero-stat-value">30s</span>
-        <span class="hero-stat-label">to your roadmap</span>
-      </div>
+    <div class="hero-stats reveal" id="heroStats">
+
+    <!-- First Time State -->
+    <div class="hero-state hero-state-default" id="heroDefaultState">
+
+        <div class="hero-feature">
+            <div class="hero-feature-icon">✓</div>
+            <div class="hero-feature-text">
+                <strong>AI + ML Powered</strong>
+                <span>Intelligent career prediction</span>
+            </div>
+        </div>
+
+        <div class="hero-feature-divider"></div>
+
+        <div class="hero-feature">
+            <div class="hero-feature-icon">✓</div>
+            <div class="hero-feature-text">
+                <strong>Resume Analysis</strong>
+                <span>ATS based evaluation</span>
+            </div>
+        </div>
+
+        <div class="hero-feature-divider"></div>
+
+        <div class="hero-feature">
+            <div class="hero-feature-icon">✓</div>
+            <div class="hero-feature-text">
+                <strong>Personalized Roadmap</strong>
+                <span>AI generated learning path</span>
+            </div>
+        </div>
+
     </div>
-  </div>
+
+    <!-- After Analysis State -->
+    <div class="hero-state hero-state-dashboard hidden" id="heroDashboardState">
+        <div class="hero-stat-card">
+            <div class="hero-stat-number" id="heroConfidence">
+                0%
+            </div>
+            <div class="hero-stat-title">
+                Prediction Confidence
+            </div>
+        </div>
+        <div class="hero-stat-card">
+            <div class="hero-stat-number" id="heroSignals">
+                0
+            </div>
+            <div class="hero-stat-title">
+                Profile Signals
+            </div>
+        </div>
+        <div class="hero-stat-card">
+            <div class="hero-stat-number" id="heroRecommendations">
+                0
+            </div>
+            <div class="hero-stat-title">
+                AI Recommendations
+            </div>
+        </div>
+    </div>
+</div>
   <div class="hero-fade"></div>
 </header>
 
