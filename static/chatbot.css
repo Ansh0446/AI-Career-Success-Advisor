@@ -1,0 +1,1172 @@
+/* ==========================================================================
+   AI CAREER ADVISOR — CHATBOT WIDGET STYLES
+   Drop-in component. Namespaced under .aca-* so it never collides with
+   existing site styles. Does not touch any selector outside this file.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. DESIGN TOKENS
+   Palette: near-black indigo surface + violet→cyan signal gradient.
+   -------------------------------------------------------------------------- */
+:root{
+  /* surfaces */
+  --aca-bg:            #0a0c12;
+  --aca-bg-elevated:   #0f1219;
+  --aca-glass:         rgba(255,255,255,0.045);
+  --aca-glass-strong:  rgba(255,255,255,0.08);
+  --aca-border:        rgba(255,255,255,0.09);
+  --aca-border-soft:   rgba(255,255,255,0.055);
+
+  /* signal gradient — violet → cyan (this app's accent identity) */
+  --aca-grad-1:        #7c6cff;
+  --aca-grad-2:        #22d3ee;
+  --aca-gradient:       linear-gradient(135deg, var(--aca-grad-1) 0%, var(--aca-grad-2) 100%);
+  --aca-gradient-soft:  linear-gradient(135deg, rgba(124,108,255,0.22) 0%, rgba(34,211,238,0.22) 100%);
+
+  /* text */
+  --aca-text:           #f2f3f7;
+  --aca-text-secondary: #9ca7b8;
+  --aca-text-muted:     #667085;
+
+  /* status */
+  --aca-success:  #34d399;
+  --aca-warning:  #fbbf24;
+  --aca-danger:   #f87171;
+  --aca-online:   #34d399;
+
+  /* elevation */
+  --aca-shadow-lg: 0 24px 60px -12px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.04);
+  --aca-shadow-sm: 0 8px 24px -8px rgba(0,0,0,0.5);
+  --aca-blur: blur(20px);
+
+  /* geometry */
+  --aca-radius-xl: 22px;
+  --aca-radius-lg: 16px;
+  --aca-radius-md: 12px;
+  --aca-radius-sm: 8px;
+
+  /* type */
+  --aca-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --aca-font-mono: "SFMono-Regular", ui-monospace, "Menlo", "Consolas", monospace;
+
+  /* motion */
+  --aca-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --aca-ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --aca-t-fast: 150ms;
+  --aca-t-med: 260ms;
+  --aca-t-slow: 420ms;
+}
+
+@media (prefers-color-scheme: light){
+  /* Widget is intentionally always-dark to match the host app's dark theme. */
+}
+
+.aca-root, .aca-root *{
+  box-sizing: border-box;
+  font-family: var(--aca-font);
+}
+
+.aca-root{
+    --aca-z: 2147483000;
+
+    position: fixed;
+    inset: 0;
+
+    width: 0;
+    height: 0;
+
+    z-index: var(--aca-z);
+
+    pointer-events: none;
+}
+
+.aca-root *{
+    pointer-events: auto;
+}
+
+/* Respect reduced motion globally within the widget */
+@media (prefers-reduced-motion: reduce){
+  .aca-root *{
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. FLOATING LAUNCH BUTTON
+   -------------------------------------------------------------------------- */
+.aca-launcher{
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: var(--aca-z);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid var(--aca-border-soft);
+  background: var(--aca-bg-elevated);
+  background-image: var(--aca-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--aca-shadow-lg);
+  transition: transform var(--aca-t-med) var(--aca-ease), box-shadow var(--aca-t-med) var(--aca-ease);
+}
+
+.aca-launcher::before{
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: var(--aca-gradient);
+  opacity: 0.35;
+  filter: blur(14px);
+  z-index: -1;
+  animation: aca-glow-pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes aca-glow-pulse{
+  0%, 100% { opacity: 0.25; transform: scale(0.95); }
+  50%      { opacity: 0.5;  transform: scale(1.08); }
+}
+
+.aca-launcher:hover{
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 28px 70px -10px rgba(124,108,255,0.45), 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+.aca-launcher:active{
+  transform: scale(0.94);
+}
+
+.aca-launcher svg{
+  width: 26px;
+  height: 26px;
+  color: #fff;
+  transition: transform var(--aca-t-med) var(--aca-ease);
+}
+
+.aca-launcher.is-open svg.aca-icon-chat{ transform: rotate(90deg) scale(0); position:absolute; }
+.aca-launcher .aca-icon-close{ position:absolute; transform: rotate(-90deg) scale(0); }
+.aca-launcher.is-open .aca-icon-close{ transform: rotate(0) scale(1); }
+.aca-launcher:not(.is-open) .aca-icon-close{ opacity:0; }
+
+.aca-launcher .aca-online-dot{
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--aca-online);
+  border: 2px solid var(--aca-bg);
+  box-shadow: 0 0 0 2px rgba(52,211,153,0.25);
+}
+
+.aca-launcher .aca-badge{
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--aca-danger);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--aca-bg);
+  animation: aca-badge-in var(--aca-t-med) var(--aca-ease);
+}
+
+@keyframes aca-badge-in{
+  from{ transform: scale(0); }
+  to{ transform: scale(1); }
+}
+
+.aca-tooltip{
+  position: absolute;
+  right: 72px;
+  bottom: 18px;
+  background: var(--aca-bg-elevated);
+  color: var(--aca-text);
+  border: 1px solid var(--aca-border);
+  padding: 8px 12px;
+  border-radius: var(--aca-radius-sm);
+  font-size: 13px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(6px);
+  transition: all var(--aca-t-fast) var(--aca-ease-soft);
+  box-shadow: var(--aca-shadow-sm);
+}
+
+.aca-launcher:hover .aca-tooltip{
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* --------------------------------------------------------------------------
+   3. CHAT WINDOW SHELL
+   -------------------------------------------------------------------------- */
+.aca-window{
+  position: fixed;
+  right: 24px;
+  bottom: 96px;
+  z-index: var(--aca-z);
+  width: 400px;
+  height: 640px;
+  max-height: calc(100vh - 120px);
+  display: flex;
+  border-radius: var(--aca-radius-xl);
+  overflow: hidden;
+  background: rgba(15,18,25,0.82);
+  backdrop-filter: var(--aca-blur);
+  -webkit-backdrop-filter: var(--aca-blur);
+  border: 1px solid var(--aca-border);
+  box-shadow: var(--aca-shadow-lg);
+  transform-origin: bottom right;
+  transform: scale(0.85) translateY(16px);
+  opacity: 0;
+  filter: blur(6px);
+  pointer-events: none;
+  transition: transform var(--aca-t-slow) var(--aca-ease),
+              opacity var(--aca-t-med) var(--aca-ease-soft),
+              filter var(--aca-t-med) var(--aca-ease-soft);
+}
+
+.aca-window.is-open{
+  transform: scale(1) translateY(0);
+  opacity: 1;
+  filter: blur(0);
+  pointer-events: auto;
+}
+
+.aca-window.is-resizable{ resize: both; }
+
+/* fullscreen on mobile */
+@media (max-width: 640px){
+  .aca-window{
+    right: 0;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+  }
+  .aca-launcher{ right: 16px; bottom: 16px; }
+}
+
+.aca-window-main{
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --------------------------------------------------------------------------
+   4. HEADER
+   -------------------------------------------------------------------------- */
+.aca-header{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px 14px 16px;
+  border-bottom: 1px solid var(--aca-border-soft);
+  background: rgba(255,255,255,0.02);
+  flex-shrink: 0;
+}
+
+/* signature element: living orb avatar */
+.aca-orb{
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: conic-gradient(from 0deg, #7c6cff, #22d3ee, #a78bfa, #7c6cff);
+  animation: aca-orb-spin 6s linear infinite;
+  box-shadow: 0 0 18px rgba(124,108,255,0.5);
+}
+.aca-orb::after{
+  content:"";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.9), rgba(15,18,25,0.95) 60%);
+  animation: aca-orb-pulse 2.4s ease-in-out infinite;
+}
+@keyframes aca-orb-spin{ to{ transform: rotate(360deg); } }
+@keyframes aca-orb-pulse{
+  0%,100%{ transform: scale(1); opacity: 1; }
+  50%{ transform: scale(0.92); opacity: 0.85; }
+}
+.aca-orb.is-thinking{ animation-duration: 1.4s; }
+.aca-orb.is-speaking::before{
+  content:"";
+  position:absolute;
+  inset:-4px;
+  border-radius:50%;
+  border: 2px solid rgba(34,211,238,0.6);
+  animation: aca-speak-ring 1.1s ease-out infinite;
+}
+@keyframes aca-speak-ring{
+  0%{ transform: scale(0.9); opacity: 0.8; }
+  100%{ transform: scale(1.35); opacity: 0; }
+}
+
+.aca-header-info{ flex: 1; min-width: 0; }
+.aca-header-title{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--aca-text);
+}
+.aca-header-title .aca-dot{
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--aca-online);
+  box-shadow: 0 0 0 3px rgba(52,211,153,0.18);
+}
+.aca-header-subtitle{
+  font-size: 12px;
+  color: var(--aca-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 1px;
+}
+.aca-voice-status{
+  display:inline-flex; align-items:center; gap:4px;
+  font-size: 11px; color: var(--aca-text-muted);
+}
+.aca-voice-status .aca-mini-dot{ width:5px; height:5px; border-radius:50%; background: var(--aca-text-muted); }
+.aca-voice-status.is-active .aca-mini-dot{ background: var(--aca-grad-2); box-shadow: 0 0 6px var(--aca-grad-2); }
+
+.aca-header-actions{ display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+
+.aca-icon-btn{
+  width: 32px;
+  height: 32px;
+  border-radius: var(--aca-radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--aca-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--aca-t-fast) var(--aca-ease-soft);
+}
+.aca-icon-btn svg{ width: 17px; height: 17px; }
+.aca-icon-btn:hover{
+  background: var(--aca-glass-strong);
+  color: var(--aca-text);
+  border-color: var(--aca-border);
+}
+.aca-icon-btn:focus-visible, .aca-root button:focus-visible, .aca-root [tabindex]:focus-visible, .aca-root input:focus-visible, .aca-root textarea:focus-visible{
+  outline: 2px solid var(--aca-grad-2);
+  outline-offset: 2px;
+}
+.aca-icon-btn:active{ transform: scale(0.92); }
+
+/* --------------------------------------------------------------------------
+   5. CONTEXT PANEL (collapsible, "AI awareness of user profile")
+   -------------------------------------------------------------------------- */
+.aca-context{
+  border-bottom: 1px solid var(--aca-border-soft);
+  flex-shrink: 0;
+  background: rgba(124,108,255,0.03);
+}
+.aca-context-toggle{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  color: var(--aca-text-secondary);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+.aca-context-toggle svg{ width: 14px; height: 14px; transition: transform var(--aca-t-fast) var(--aca-ease-soft); }
+.aca-context.is-open .aca-context-toggle svg{ transform: rotate(180deg); }
+
+.aca-context-body{
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--aca-t-med) var(--aca-ease-soft);
+}
+.aca-context.is-open .aca-context-body{ max-height: 320px; overflow-y:auto; }
+
+.aca-context-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 4px 16px 14px;
+}
+.aca-context-item{
+  background: var(--aca-glass);
+  border: 1px solid var(--aca-border-soft);
+  border-radius: var(--aca-radius-sm);
+  padding: 8px 10px;
+}
+.aca-context-item .aca-ctx-label{
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--aca-text-muted);
+  margin-bottom: 3px;
+}
+.aca-context-item .aca-ctx-value{
+  font-size: 12.5px;
+  color: var(--aca-text);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.aca-context-item .aca-ctx-value[data-empty="true"]{ color: var(--aca-text-muted); font-weight: 400; }
+
+/* memory chips row */
+.aca-memory{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 16px 14px;
+}
+.aca-chip{
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--aca-glass);
+  border: 1px solid var(--aca-border-soft);
+  font-size: 11.5px;
+  color: var(--aca-text-secondary);
+  cursor: pointer;
+  transition: all var(--aca-t-fast) var(--aca-ease-soft);
+}
+.aca-chip:hover{ border-color: var(--aca-grad-1); color: var(--aca-text); background: var(--aca-gradient-soft); }
+.aca-chip svg{ width: 12px; height: 12px; }
+
+/* --------------------------------------------------------------------------
+   6. MESSAGES AREA
+   -------------------------------------------------------------------------- */
+.aca-messages{
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-behavior: smooth;
+}
+.aca-messages::-webkit-scrollbar{ width: 6px; }
+.aca-messages::-webkit-scrollbar-thumb{ background: var(--aca-glass-strong); border-radius: 999px; }
+.aca-messages::-webkit-scrollbar-track{ background: transparent; }
+
+/* welcome screen */
+.aca-welcome{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 8px 2px 4px;
+  animation: aca-rise-in var(--aca-t-slow) var(--aca-ease);
+}
+.aca-welcome-orb{
+  width: 46px; height: 46px; border-radius: 50%;
+  background: conic-gradient(from 90deg, #7c6cff, #22d3ee, #a78bfa, #7c6cff);
+  box-shadow: 0 0 26px rgba(124,108,255,0.45);
+  animation: aca-orb-spin 8s linear infinite;
+}
+.aca-welcome h2{
+  font-size: 18px;
+  font-weight: 650;
+  color: var(--aca-text);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.aca-welcome p{
+  font-size: 13.5px;
+  color: var(--aca-text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+.aca-welcome-list{
+  list-style: none;
+  padding: 0; margin: 2px 0 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 14px;
+  width: 100%;
+}
+.aca-welcome-list li{
+  font-size: 12.5px;
+  color: var(--aca-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.aca-welcome-list li::before{
+  content: "";
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--aca-gradient);
+  flex-shrink: 0;
+}
+
+.aca-suggestions{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+}
+.aca-suggest-card{
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: var(--aca-radius-md);
+  background: var(--aca-glass);
+  border: 1px solid var(--aca-border-soft);
+  color: var(--aca-text);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--aca-t-fast) var(--aca-ease-soft);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.aca-suggest-card svg{ width: 15px; height: 15px; color: var(--aca-grad-2); flex-shrink: 0; }
+.aca-suggest-card:hover{
+  border-color: transparent;
+  background: var(--aca-gradient-soft);
+  transform: translateY(-2px);
+  box-shadow: var(--aca-shadow-sm);
+}
+
+/* quick action rail (horizontal scroll cards) */
+.aca-quick-rail{
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 10px 16px;
+  border-top: 1px solid var(--aca-border-soft);
+  border-bottom: 1px solid var(--aca-border-soft);
+  flex-shrink: 0;
+  scrollbar-width: none;
+}
+.aca-quick-rail::-webkit-scrollbar{ display:none; }
+.aca-quick-card{
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--aca-glass);
+  border: 1px solid var(--aca-border-soft);
+  color: var(--aca-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--aca-t-fast) var(--aca-ease-soft);
+}
+.aca-quick-card:hover{ color: var(--aca-text); border-color: var(--aca-grad-1); background: var(--aca-gradient-soft); }
+
+/* message rows */
+.aca-msg{
+  display: flex;
+  gap: 10px;
+  max-width: 100%;
+  animation: aca-rise-in var(--aca-t-med) var(--aca-ease);
+}
+@keyframes aca-rise-in{
+  from{ opacity: 0; transform: translateY(8px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+.aca-msg.is-user{ flex-direction: row-reverse; }
+
+.aca-msg-avatar{
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  display:flex; align-items:center; justify-content:center;
+}
+.aca-msg.is-ai .aca-msg-avatar{
+  background: conic-gradient(from 0deg, #7c6cff, #22d3ee, #a78bfa, #7c6cff);
+}
+.aca-msg.is-user .aca-msg-avatar{
+  background: var(--aca-glass-strong);
+  border: 1px solid var(--aca-border);
+  color: var(--aca-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.aca-msg-col{ display:flex; flex-direction:column; gap:5px; max-width: 82%; }
+.aca-msg.is-user .aca-msg-col{ align-items: flex-end; }
+
+.aca-bubble{
+  padding: 10px 13px;
+  border-radius: var(--aca-radius-md);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--aca-text);
+  word-wrap: break-word;
+}
+.aca-msg.is-ai .aca-bubble{
+  background: var(--aca-glass);
+  border: 1px solid var(--aca-border-soft);
+  border-top-left-radius: 4px;
+}
+.aca-msg.is-user .aca-bubble{
+  background: var(--aca-gradient);
+  color: #fff;
+  border-top-right-radius: 4px;
+}
+
+.aca-bubble p{ margin: 0 0 8px; }
+.aca-bubble p:last-child{ margin-bottom: 0; }
+.aca-bubble ul, .aca-bubble ol{ margin: 6px 0; padding-left: 18px; }
+.aca-bubble li{ margin-bottom: 3px; }
+.aca-bubble a{ color: var(--aca-grad-2); text-decoration: underline; text-underline-offset: 2px; }
+.aca-bubble code{
+  font-family: var(--aca-font-mono);
+  font-size: 12px;
+  background: rgba(0,0,0,0.35);
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+.aca-bubble pre{
+  background: #06070b;
+  border: 1px solid var(--aca-border-soft);
+  border-radius: var(--aca-radius-sm);
+  padding: 10px 12px;
+  overflow-x: auto;
+  margin: 8px 0;
+}
+.aca-bubble pre code{ background: none; padding: 0; font-size: 12px; color: #d7dae4; }
+.aca-bubble table{ border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 12px; }
+.aca-bubble th, .aca-bubble td{ border: 1px solid var(--aca-border-soft); padding: 6px 8px; text-align: left; }
+.aca-bubble th{ background: var(--aca-glass-strong); }
+.aca-bubble img.aca-img-placeholder{
+  width: 100%; border-radius: var(--aca-radius-sm); border: 1px solid var(--aca-border-soft);
+}
+
+.aca-bubble.is-collapsed{
+  max-height: 190px;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+}
+.aca-expand-btn{
+  background:none; border:none; color: var(--aca-grad-2);
+  font-size: 12px; font-weight:600; cursor:pointer; padding: 2px 0;
+}
+
+.aca-msg-meta{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--aca-text-muted);
+}
+
+.aca-msg-actions{
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity var(--aca-t-fast) var(--aca-ease-soft);
+}
+.aca-msg:hover .aca-msg-actions{ opacity: 1; }
+.aca-msg-actions button{
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--aca-text-muted);
+  display: flex; align-items:center; justify-content:center;
+  cursor: pointer;
+  transition: all var(--aca-t-fast) var(--aca-ease-soft);
+}
+.aca-msg-actions button svg{ width: 13px; height: 13px; }
+.aca-msg-actions button:hover{ background: var(--aca-glass-strong); color: var(--aca-text); }
+.aca-msg-actions button.is-active{ color: var(--aca-grad-2); }
+
+/* typing indicator */
+.aca-typing{
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--aca-glass);
+  border: 1px solid var(--aca-border-soft);
+  border-radius: var(--aca-radius-md);
+  border-top-left-radius: 4px;
+}
+.aca-typing span{
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--aca-text-secondary);
+  animation: aca-bounce 1.2s var(--aca-ease-soft) infinite;
+}
+.aca-typing span:nth-child(2){ animation-delay: 0.15s; }
+.aca-typing span:nth-child(3){ animation-delay: 0.3s; }
+@keyframes aca-bounce{
+  0%, 60%, 100%{ transform: translateY(0); opacity: 0.5; }
+  30%{ transform: translateY(-4px); opacity: 1; }
+}
+
+/* streaming cursor */
+.aca-caret{
+  display: inline-block;
+  width: 2px; height: 14px;
+  background: var(--aca-grad-2);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: aca-caret-blink 0.9s step-end infinite;
+}
+@keyframes aca-caret-blink{ 50%{ opacity: 0; } }
+
+/* empty / status states inside message list */
+.aca-empty-state{
+  margin: auto;
+  text-align: center;
+  color: var(--aca-text-muted);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 30px 20px;
+}
+.aca-empty-state svg{ width: 34px; height: 34px; opacity: 0.5; }
+
+/* --------------------------------------------------------------------------
+   7. VOICE OVERLAY (mic listening state)
+   -------------------------------------------------------------------------- */
+.aca-voice-overlay{
+  position: absolute;
+  inset: 0;
+  background: rgba(10,12,18,0.92);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--aca-t-med) var(--aca-ease-soft);
+  z-index: 5;
+}
+.aca-voice-overlay.is-active{ opacity: 1; pointer-events: auto; }
+
+.aca-waveform{
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 48px;
+}
+.aca-waveform span{
+  width: 4px;
+  border-radius: 3px;
+  background: var(--aca-gradient);
+  animation: aca-wave 1s ease-in-out infinite;
+}
+.aca-waveform span:nth-child(1){ height: 16px; animation-delay: 0s; }
+.aca-waveform span:nth-child(2){ height: 32px; animation-delay: 0.1s; }
+.aca-waveform span:nth-child(3){ height: 46px; animation-delay: 0.2s; }
+.aca-waveform span:nth-child(4){ height: 28px; animation-delay: 0.3s; }
+.aca-waveform span:nth-child(5){ height: 40px; animation-delay: 0.4s; }
+.aca-waveform span:nth-child(6){ height: 20px; animation-delay: 0.5s; }
+.aca-waveform span:nth-child(7){ height: 34px; animation-delay: 0.6s; }
+@keyframes aca-wave{
+  0%, 100%{ transform: scaleY(0.4); }
+  50%{ transform: scaleY(1); }
+}
+.aca-voice-label{ color: var(--aca-text); font-size: 14px; font-weight: 500; }
+.aca-voice-sub{ color: var(--aca-text-muted); font-size: 12px; margin-top: -10px; }
+.aca-voice-controls{ display: flex; gap: 10px; margin-top: 6px; }
+.aca-voice-controls button{
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--aca-border);
+  background: var(--aca-glass);
+  color: var(--aca-text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--aca-t-fast) var(--aca-ease-soft);
+}
+.aca-voice-controls button.aca-primary{ background: var(--aca-gradient); border: none; }
+.aca-voice-controls button:hover{ transform: translateY(-1px); }
+
+.aca-mic-btn.is-listening{
+  color: #fff;
+  background: var(--aca-danger);
+  animation: aca-mic-pulse 1.4s ease-in-out infinite;
+}
+@keyframes aca-mic-pulse{
+  0%,100%{ box-shadow: 0 0 0 0 rgba(248,113,113,0.5); }
+  50%{ box-shadow: 0 0 0 8px rgba(248,113,113,0); }
+}
+
+/* --------------------------------------------------------------------------
+   8. ATTACHMENT / FILE UPLOAD POPUP
+   -------------------------------------------------------------------------- */
+.aca-attach-popup{
+  position: absolute;
+  bottom: 100%;
+  left: 12px;
+  margin-bottom: 10px;
+  width: 280px;
+  background: var(--aca-bg-elevated);
+  border: 1px solid var(--aca-border);
+  border-radius: var(--aca-radius-lg);
+  box-shadow: var(--aca-shadow-lg);
+  padding: 12px;
+  opacity: 0;
+  transform: translateY(8px) scale(0.97);
+  pointer-events: none;
+  transition: all var(--aca-t-med) var(--aca-ease);
+  z-index: 6;
+}
+.aca-attach-popup.is-open{ opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+.aca-attach-dropzone{
+  border: 1.5px dashed var(--aca-border);
+  border-radius: var(--aca-radius-md);
+  padding: 18px 10px;
+  text-align: center;
+  color: var(--aca-text-secondary);
+  font-size: 12px;
+  margin-bottom: 10px;
+  transition: all var(--aca-t-fast) var(--aca-ease-soft);
+  cursor: pointer;
+}
+.aca-attach-dropzone.is-dragover{
+  border-color: var(--aca-grad-2);
+  background: var(--aca-gradient-soft);
+  color: var(--aca-text);
+}
+
+.aca-attach-types{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.aca-attach-type{
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 9px;
+  border-radius: var(--aca-radius-sm);
+  background: var(--aca-glass);
+  border: 1px solid var(--aca-border-soft);
+  font-size: 11.5px;
+  color: var(--aca-text-secondary);
+  cursor: pointer;
+  transition: all var(--aca-t-fast) var(--aca-ease-soft);
+}
+.aca-attach-type:hover{ color: var(--aca-text); border-color: var(--aca-grad-1); }
+.aca-attach-type svg{ width: 14px; height: 14px; color: var(--aca-grad-2); }
+
+.aca-file-list{ display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.aca-file-item{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border-radius: var(--aca-radius-sm);
+  background: var(--aca-glass);
+  border: 1px solid var(--aca-border-soft);
+  font-size: 11.5px;
+  color: var(--aca-text);
+}
+.aca-file-item .aca-file-name{ flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aca-file-progress{
+  height: 3px;
+  border-radius: 2px;
+  background: var(--aca-glass-strong);
+  overflow: hidden;
+  margin-top: 4px;
+}
+.aca-file-progress-bar{
+  height: 100%;
+  background: var(--aca-gradient);
+  width: 0%;
+  transition: width var(--aca-t-med) var(--aca-ease-soft);
+}
+.aca-file-remove{
+  background: none; border: none; color: var(--aca-text-muted); cursor: pointer;
+  display:flex; align-items:center;
+}
+.aca-file-remove:hover{ color: var(--aca-danger); }
+
+/* --------------------------------------------------------------------------
+   9. INPUT AREA
+   -------------------------------------------------------------------------- */
+.aca-input-area{
+  position: relative;
+  border-top: 1px solid var(--aca-border-soft);
+  padding: 10px 12px 12px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.015);
+}
+.aca-input-shell{
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  background: var(--aca-glass);
+  border: 1px solid var(--aca-border);
+  border-radius: var(--aca-radius-lg);
+  padding: 6px 6px 6px 10px;
+  transition: border-color var(--aca-t-fast) var(--aca-ease-soft), box-shadow var(--aca-t-fast) var(--aca-ease-soft);
+}
+.aca-input-shell:focus-within{
+  border-color: var(--aca-grad-1);
+  box-shadow: 0 0 0 3px rgba(124,108,255,0.15);
+}
+.aca-input{
+  flex: 1;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--aca-text);
+  font-size: 13.5px;
+  line-height: 1.5;
+  max-height: 140px;
+  padding: 7px 2px;
+  font-family: var(--aca-font);
+}
+.aca-input::placeholder{ color: var(--aca-text-muted); }
+
+.aca-input-actions{ display: flex; align-items: center; gap: 2px; }
+.aca-send-btn{
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--aca-gradient);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: transform var(--aca-t-fast) var(--aca-ease-soft), opacity var(--aca-t-fast);
+  flex-shrink: 0;
+}
+.aca-send-btn svg{ width: 15px; height: 15px; }
+.aca-send-btn:hover{ transform: scale(1.08); }
+.aca-send-btn:active{ transform: scale(0.9); }
+.aca-send-btn:disabled{ opacity: 0.4; cursor: not-allowed; transform:none; }
+
+.aca-input-footer{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 4px 0;
+  font-size: 10.5px;
+  color: var(--aca-text-muted);
+}
+
+/* ripple effect utility */
+.aca-ripple:not(.aca-launcher){
+  position: relative;
+  overflow: hidden;
+}
+.aca-launcher.aca-ripple{
+  overflow: hidden;
+}
+.aca-ripple-el{
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  transform: scale(0);
+  animation: aca-ripple-anim 550ms var(--aca-ease-soft);
+  pointer-events: none;
+}
+@keyframes aca-ripple-anim{
+  to{ transform: scale(2.6); opacity: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   10. HISTORY SIDEBAR
+   -------------------------------------------------------------------------- */
+.aca-sidebar{
+  width: 0;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-right: 1px solid var(--aca-border-soft);
+  background: rgba(0,0,0,0.18);
+  transition: width var(--aca-t-med) var(--aca-ease-soft);
+  display: flex;
+  flex-direction: column;
+}
+.aca-sidebar.is-open{ width: 220px; }
+
+.aca-sidebar-header{
+  padding: 12px;
+  display: flex; align-items:center; gap:8px;
+  border-bottom: 1px solid var(--aca-border-soft);
+}
+.aca-sidebar-search{
+  flex:1;
+  background: var(--aca-glass);
+  border: 1px solid var(--aca-border-soft);
+  border-radius: var(--aca-radius-sm);
+  padding: 6px 9px;
+  font-size: 12px;
+  color: var(--aca-text);
+}
+.aca-sidebar-search::placeholder{ color: var(--aca-text-muted); }
+
+.aca-sidebar-body{ flex: 1; overflow-y: auto; padding: 8px; }
+.aca-sidebar-group-label{
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--aca-text-muted);
+  padding: 8px 6px 4px;
+}
+.aca-history-item{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 8px;
+  border-radius: var(--aca-radius-sm);
+  font-size: 12px;
+  color: var(--aca-text-secondary);
+  cursor: pointer;
+  transition: background var(--aca-t-fast) var(--aca-ease-soft);
+}
+.aca-history-item span.aca-history-title{ flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aca-history-item:hover{ background: var(--aca-glass); color: var(--aca-text); }
+.aca-history-item.is-active{ background: var(--aca-gradient-soft); color: var(--aca-text); }
+.aca-history-actions{ display:none; gap:2px; }
+.aca-history-item:hover .aca-history-actions{ display:flex; }
+.aca-history-actions button{ background:none; border:none; color: var(--aca-text-muted); cursor:pointer; }
+.aca-history-actions button:hover{ color: var(--aca-text); }
+.aca-history-actions svg{ width: 12px; height: 12px; }
+.aca-history-item .aca-pin-icon{ width: 12px; height:12px; color: var(--aca-grad-2); flex-shrink:0; }
+
+/* --------------------------------------------------------------------------
+   11. SETTINGS PANEL (slide-in from right)
+   -------------------------------------------------------------------------- */
+.aca-settings{
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 260px;
+  max-width: 88%;
+  background: var(--aca-bg-elevated);
+  border-left: 1px solid var(--aca-border);
+  transform: translateX(100%);
+  transition: transform var(--aca-t-med) var(--aca-ease);
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+}
+.aca-settings.is-open{ transform: translateX(0); }
+.aca-settings-header{
+  display: flex; align-items:center; justify-content:space-between;
+  padding: 14px 16px; border-bottom: 1px solid var(--aca-border-soft);
+  font-size: 13.5px; font-weight: 600; color: var(--aca-text);
+}
+.aca-settings-body{ padding: 14px 16px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 18px; }
+.aca-setting-row{ display: flex; flex-direction: column; gap: 8px; }
+.aca-setting-row label{ font-size: 12px; color: var(--aca-text-secondary); font-weight: 500; }
+.aca-setting-control{ display: flex; gap: 6px; }
+.aca-seg-btn{
+  flex: 1;
+  padding: 7px 4px;
+  text-align: center;
+  border-radius: var(--aca-radius-sm);
+  background: var(--aca-glass);
+  border: 1px solid var(--aca-border-soft);
+  color: var(--aca-text-secondary);
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.aca-seg-btn.is-active{ background: var(--aca-gradient); color:#fff; border-color: transparent; }
+
+.aca-switch{
+  display: flex; align-items:center; justify-content:space-between;
+}
+.aca-switch-track{
+  width: 38px; height: 22px; border-radius: 999px;
+  background: var(--aca-glass-strong);
+  border: 1px solid var(--aca-border-soft);
+  position: relative;
+  cursor: pointer;
+  transition: background var(--aca-t-fast) var(--aca-ease-soft);
+}
+.aca-switch-track::after{
+  content: "";
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform var(--aca-t-fast) var(--aca-ease-soft);
+}
+.aca-switch-track.is-on{ background: var(--aca-gradient); }
+.aca-switch-track.is-on::after{ transform: translateX(16px); }
+
+.aca-settings-btn{
+  padding: 9px 12px;
+  border-radius: var(--aca-radius-sm);
+  background: var(--aca-glass);
+  border: 1px solid var(--aca-border-soft);
+  color: var(--aca-text);
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--aca-t-fast) var(--aca-ease-soft);
+}
+.aca-settings-btn:hover{ border-color: var(--aca-grad-1); }
+.aca-settings-btn.is-danger{ color: var(--aca-danger); }
+
+.aca-scrim{
+  position: absolute; inset: 0; background: rgba(0,0,0,0.35);
+  opacity: 0; pointer-events: none; transition: opacity var(--aca-t-med) var(--aca-ease-soft);
+  z-index: 7;
+}
+.aca-scrim.is-open{ opacity: 1; pointer-events: auto; }
+
+/* --------------------------------------------------------------------------
+   12. NO-INTERNET / ERROR BANNER
+   -------------------------------------------------------------------------- */
+.aca-banner{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  font-size: 12px;
+  background: rgba(248,113,113,0.12);
+  color: #fca5a5;
+  border-bottom: 1px solid rgba(248,113,113,0.2);
+}
+.aca-banner svg{ width: 14px; height: 14px; flex-shrink: 0; }
+
+/* --------------------------------------------------------------------------
+   13. RESPONSIVE TWEAKS
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px){
+  .aca-sidebar.is-open{ position: absolute; inset: 0; width: 100%; z-index: 9; }
+  .aca-settings{ width: 88%; }
+}
+
+@media (min-width: 641px) and (max-width: 900px){
+  .aca-window{ width: 360px; }
+}
