@@ -1,6 +1,6 @@
 import os
 import PyPDF2
-from mentor import client
+from gemini_service import client
 
 
 def analyze_resume(pdf_path):

@@ -509,17 +509,27 @@
       });
   }
 
-  function fetchMockReply(text) {
-    // Placeholder only — swap for a real call to the Flask /chat endpoint.
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(
-          "This is a placeholder response. Connect this widget to your `/chat` Flask route (Gemini API) to replace this with real, personalized answers about **" +
-          escapeHtml(text).slice(0, 60) + "**."
-        );
-      }, 1100);
+  async function fetchMockReply(text) {
+
+    const response = await fetch("/chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            message: text,
+            context: null
+        })
     });
-  }
+
+    if (!response.ok) {
+        throw new Error("Failed to connect to AI server.");
+    }
+
+    const data = await response.json();
+
+    return data.reply;
+}
 
   els.clearChat.addEventListener("click", () => {
     els.messages.querySelectorAll(".aca-msg").forEach((m) => m.remove());

@@ -6,6 +6,7 @@ from resume_analyzer import analyze_resume
 import os
 import json
 from werkzeug.utils import secure_filename
+from chat import generate_chat_response
 
 app = Flask(__name__)
 
@@ -510,6 +511,35 @@ def analyze_resume_route():
 
         }),500
 
+# ==========================================================
+# AI CHAT
+# ==========================================================
+
+@app.route("/chat", methods=["POST"])
+def chat():
+
+    try:
+        data = request.get_json()
+
+        message = data.get("message", "")
+        context = data.get("context", None)
+
+        reply = generate_chat_response(
+            message=message,
+            context=context
+        )
+
+        return jsonify({
+            "success": True,
+            "reply": reply
+        })
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
+    
 # ==========================================================
 # MAIN
 # ==========================================================
