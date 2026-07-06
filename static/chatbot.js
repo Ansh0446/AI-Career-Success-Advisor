@@ -518,7 +518,7 @@
         },
         body: JSON.stringify({
             message: text,
-            context: null
+            context: window.CareerAIContext
         })
     });
 

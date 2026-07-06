@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import pandas as pd
 import joblib
+import traceback
 from mentor import generate_roadmap as ai_generate_roadmap
 from resume_analyzer import analyze_resume
 import os
@@ -89,6 +90,8 @@ def get_resources(role):
         })
 
     except Exception as e:
+        traceback.print_exc()
+
         return jsonify({
             "success": False,
             "message": str(e)
@@ -426,6 +429,7 @@ def predict():
         })
 
     except Exception as e:
+        traceback.print_exc()
 
         return jsonify({
 
@@ -535,6 +539,7 @@ def chat():
         })
 
     except Exception as e:
+        traceback.print_exc()
         return jsonify({
             "success": False,
             "error": str(e)

@@ -16,6 +16,11 @@ import {
 (function () {
   "use strict";
 
+// ==========================================================
+// CareerAI Global Context
+// ==========================================================
+window.CareerAIContext = null;
+
   /* ---------------------------------------------------------
      0. Footer year
   --------------------------------------------------------- */
@@ -566,6 +571,33 @@ fetch("/predict", {
     finishAIProgress(function () {
 
         renderResults(result);
+// ==========================================================
+// Save context for AI Chatbot
+// ==========================================================
+
+window.CareerAIContext = {
+
+    degree: payload.degree,
+    branch: payload.branch,
+    year: payload.year,
+    cgpa: payload.cgpa,
+
+    goal: payload.goal,
+    target_role: payload.target_role,
+
+    academic_category: result.academic_category,
+
+    employability_score: result.employability_score,
+
+    placement_probability: result.placement_probability,
+
+    strengths: result.strengths,
+
+    weaknesses: result.weaknesses,
+
+    recommendations: result.recommendations
+
+};
         showHeroDashboard(
             result.prediction_confidence || 94,
             result.profile_signals || 22,
