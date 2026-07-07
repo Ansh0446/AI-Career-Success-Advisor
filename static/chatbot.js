@@ -165,6 +165,9 @@
     els.window.setAttribute("aria-hidden", "true");
     els.launcher.classList.remove("is-open");
     els.launcher.setAttribute("aria-expanded", "false");
+    // Always close the attach popup so it cannot stay open after the window closes.
+    // Without this, #acaDropzone retains pointer-events and intercepts page clicks.
+    toggleAttachPopup(false);
   }
 
   els.launcher.addEventListener("click", () => (state.open ? closeWindow() : openWindow()));
@@ -691,3 +694,4 @@
     notify: () => { els.badge.hidden = false; els.badge.textContent = ""; },
   };
 })();
+

@@ -84,6 +84,26 @@
     pointer-events: auto;
 }
 
+/* --- Pointer-events fix ---
+   .aca-root * sets pointer-events:auto on every descendant (specificity 0-1-0).
+   That accidentally overrides the pointer-events:none that .aca-window and
+   .aca-attach-popup set in their CLOSED states, making invisible elements
+   (e.g. #acaDropzone) intercept page clicks and open the file picker.
+
+   :not(.is-open) rules have specificity 0-2-0, which beats the wildcard.
+   They restore pointer-events:none for the closed window and its children,
+   and for the closed attach popup and its children (dropzone, type buttons). */
+
+.aca-window:not(.is-open),
+.aca-window:not(.is-open) * {
+    pointer-events: none;
+}
+
+.aca-attach-popup:not(.is-open),
+.aca-attach-popup:not(.is-open) * {
+    pointer-events: none;
+}
+
 /* Respect reduced motion globally within the widget */
 @media (prefers-reduced-motion: reduce){
   .aca-root *{

@@ -647,12 +647,49 @@ window.CareerAIContext = {
 
   function renderRoadmap(weeks) {
     roadmapTimeline.innerHTML = "";
+
+    var SECTION_META = [
+      { key: "topics",               label: "📚 Topics",               icon: "topics" },
+      { key: "tasks",                label: "✅ Tasks",                icon: "tasks" },
+      { key: "projects",             label: "🛠 Projects",             icon: "projects" },
+      { key: "resources",            label: "🔗 Resources",            icon: "resources" },
+      { key: "interview_preparation",label: "🎯 Interview Preparation", icon: "interview" }
+    ];
+
     weeks.forEach(function (week, i) {
+      var weekNum = week.week || (i + 1);
+
+      /* Build section HTML — only render non-empty arrays */
+      var sectionsHtml = "";
+      SECTION_META.forEach(function (meta) {
+        var items = week[meta.key];
+        if (!Array.isArray(items) || items.length === 0) return;
+        var listItems = items.map(function (item) {
+          return "<li>" + String(item).replace(/</g, "&lt;").replace(/>/g, "&gt;") + "</li>";
+        }).join("");
+        sectionsHtml +=
+          "<div class=\"roadmap-section\">" +
+            "<h6 class=\"roadmap-section-label\">" + meta.label + "</h6>" +
+            "<ul class=\"roadmap-list\">" + listItems + "</ul>" +
+          "</div>";
+      });
+
       var item = document.createElement("div");
       item.className = "timeline-item";
       item.innerHTML =
-        '<div class="timeline-week"><span>Week</span><span>' + (i + 1) + '</span></div>' +
-        '<div class="timeline-body"><h5>' + week.title + '</h5><p>' + week.desc + '</p></div>';
+        "<div class=\"timeline-week\"><span>Week</span><span>" + weekNum + "</span></div>" +
+        "<div class=\"timeline-body\">" +
+          "<h5 class=\"roadmap-week-title\">" +
+            (week.title ? String(week.title).replace(/</g, "&lt;").replace(/>/g, "&gt;") : "Week " + weekNum) +
+          "</h5>" +
+          (week.goal
+            ? "<p class=\"roadmap-goal\">" +
+                String(week.goal).replace(/</g, "&lt;").replace(/>/g, "&gt;") +
+              "</p>"
+            : "") +
+          sectionsHtml +
+        "</div>";
+
       roadmapTimeline.appendChild(item);
     });
   }
@@ -708,8 +745,16 @@ window.CareerAIContext = {
           return res.json();
         })
         .then(function (data) {
-          chatIntroText.textContent = data.intro || ("Here's your 30-day roadmap toward " + (targetRole || "your goal") + ".");
-          renderRoadmap(data.weeks || buildDemoRoadmap(targetRole, goal));
+          var roadmap = (data.roadmap && data.roadmap.weeks) ? data.roadmap : null;
+          chatIntroText.textContent = data.intro ||
+            ("Here\u2019s your personalised roadmap toward " + (targetRole || "your goal") + ".");
+          if (roadmap && roadmap.weeks && roadmap.weeks.length) {
+            renderRoadmap(roadmap.weeks);
+          } else if (data.weeks && data.weeks.length) {
+            renderRoadmap(data.weeks);
+          } else {
+            renderRoadmap(buildDemoRoadmap(targetRole, goal));
+          }
         })
         .catch(function (err) {
           console.warn("[AI Career Advisor] /generate-roadmap unavailable, showing demo roadmap:", err.message);

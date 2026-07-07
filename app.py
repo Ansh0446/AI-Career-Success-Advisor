@@ -451,14 +451,9 @@ def generate_ai_roadmap():
         roadmap = ai_generate_roadmap(data)
 
         return jsonify({
-            "intro": "Your Personalized AI Roadmap",
-            "weeks": [
-                {
-                    "title": "AI Mentor Response",
-                    "desc": roadmap
-                }
-            ]
-        })
+          "success": True,
+          "roadmap": roadmap
+})
 
     except Exception as e:
 

@@ -1,74 +1,125 @@
 from gemini_service import client
-
+import json
 def generate_roadmap(student):
 
     prompt = f"""
-You are an expert AI Career Mentor.
+You are CareerAI, an expert AI Career Mentor.
 
-Analyze the student's profile and create a highly personalized 30-day roadmap.
+You must generate a highly personalized 30-day roadmap.
 
 Student Profile
 
-Degree : {student['degree']}
-Branch : {student['branch']}
-Year : {student['year']}
+Degree: {student['degree']}
+Branch: {student['branch']}
+Year: {student['year']}
 
-CGPA : {student['cgpa']}
+CGPA: {student['cgpa']}
 
-Academic Category : {student['academic_category']}
+Academic Category: {student['academic_category']}
 
-Employability Score : {student['employability_score']}
+Employability Score: {student['employability_score']}
 
-Placement Probability : {student['placement_probability']}
+Placement Probability: {student['placement_probability']}
 
-Target Role : {student['target_role']}
+Target Role: {student['target_role']}
 
-Career Goal : {student['goal']}
+Career Goal: {student['goal']}
 
-Strengths :
+Strengths:
 {", ".join(student["strengths"])}
 
-Weaknesses :
+Weaknesses:
 {", ".join(student["weaknesses"])}
 
-Recommendations :
+Recommendations:
 {", ".join(student["recommendations"])}
 
-Instructions:
+------------------------------------------------
 
-Generate a practical 30-day roadmap.
+IMPORTANT
 
-Divide into:
+Return ONLY valid JSON.
 
-Week 1
+Do NOT return markdown.
 
-Week 2
+Do NOT return explanations.
 
-Week 3
+Do NOT wrap JSON inside ```.
 
-Week 4
+Do NOT write any introductory text.
 
-Each week should include:
+The response MUST exactly follow this schema:
 
-Topics to study
+{{
+  "student_summary": {{
+    "target_role": "",
+    "goal": "",
+    "academic_category": "",
+    "employability_score": 0,
+    "placement_probability": 0
+  }},
+  "weeks": [
+    {{
+      "week": 1,
+      "title": "",
+      "goal": "",
+      "topics": [],
+      "tasks": [],
+      "projects": [],
+      "resources": [],
+      "interview_preparation": []
+    }},
+    {{
+      "week": 2,
+      "title": "",
+      "goal": "",
+      "topics": [],
+      "tasks": [],
+      "projects": [],
+      "resources": [],
+      "interview_preparation": []
+    }},
+    {{
+      "week": 3,
+      "title": "",
+      "goal": "",
+      "topics": [],
+      "tasks": [],
+      "projects": [],
+      "resources": [],
+      "interview_preparation": []
+    }},
+    {{
+      "week": 4,
+      "title": "",
+      "goal": "",
+      "topics": [],
+      "tasks": [],
+      "projects": [],
+      "resources": [],
+      "interview_preparation": []
+    }}
+  ]
+}}
 
-Projects
+Generate realistic content.
 
-Coding Practice
-
-Resources
-
-Daily Tasks
-
-Interview Preparation
-
-Keep the roadmap concise, practical and personalized.
-
-Return only plain text.
-
+Return ONLY JSON.
 """
     response = client.models.generate_content(
-    model="gemini-2.5-flash",
-    contents=prompt
+        model="gemini-2.5-flash",
+        contents=prompt
 )
-    return response.text
+
+    try:
+        return json.loads(response.text)
+
+    except Exception:
+      cleaned = (
+        response.text
+        .replace("```json", "")
+        .replace("```", "")
+        .strip()
+    )
+
+    return json.loads(cleaned)
