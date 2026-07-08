@@ -313,19 +313,111 @@
     requestAnimationFrame(tick);
   }
 
-  function fillTagList(container, items, prefix) {
+  /* ------------------------------------------------------------------
+     fillInsightCards — Strengths: green-accented AI insight cards.
+     Each item is rendered as a card with a title line (prefix + first
+     sentence / short phrase) and a description body (remainder).
+     Both title and body are derived from the single string Gemini
+     returns, so no schema change is needed.
+  ------------------------------------------------------------------ */
+  function fillInsightCards(container, items) {
     container.innerHTML = "";
     items.forEach(function (item) {
-      var span = document.createElement("span");
-      span.textContent = prefix + " " + item;
-      container.appendChild(span);
+      var parts  = splitTitleBody(item);
+      var card   = document.createElement("div");
+      card.className = "resume-insight-card";
+      card.innerHTML =
+        "<div class=\"ric-header\">" +
+          "<span class=\"ric-icon\">\u2713</span>" +
+          "<span class=\"ric-title\">" + escapeHtml(parts.title) + "</span>" +
+        "</div>" +
+        (parts.body ? "<p class=\"ric-body\">" + mdLite(parts.body) + "</p>" : "");
+      container.appendChild(card);
     });
   }
 
+  /* ------------------------------------------------------------------
+     fillWarningCards — Weaknesses: orange-accented warning cards.
+  ------------------------------------------------------------------ */
+  function fillWarningCards(container, items) {
+    container.innerHTML = "";
+    items.forEach(function (item) {
+      var parts = splitTitleBody(item);
+      var card  = document.createElement("div");
+      card.className = "resume-warning-card";
+      card.innerHTML =
+        "<div class=\"rwc-header\">" +
+          "<span class=\"rwc-icon\">\u26a0</span>" +
+          "<span class=\"rwc-title\">" + escapeHtml(parts.title) + "</span>" +
+        "</div>" +
+        (parts.body ? "<p class=\"rwc-body\">" + mdLite(parts.body) + "</p>" : "");
+      container.appendChild(card);
+    });
+  }
+
+  /* ------------------------------------------------------------------
+     fillSkillCards — Missing Skills: blue-accented suggestion cards.
+  ------------------------------------------------------------------ */
+  function fillSkillCards(container, items) {
+    container.innerHTML = "";
+    items.forEach(function (item) {
+      var parts = splitTitleBody(item);
+      var card  = document.createElement("div");
+      card.className = "resume-skill-card";
+      card.innerHTML =
+        "<div class=\"rsc-header\">" +
+          "<span class=\"rsc-icon\">+</span>" +
+          "<span class=\"rsc-title\">" + escapeHtml(parts.title) + "</span>" +
+        "</div>" +
+        (parts.body ? "<p class=\"rsc-body\">" + mdLite(parts.body) + "</p>" : "");
+      container.appendChild(card);
+    });
+  }
+
+  /* ------------------------------------------------------------------
+     splitTitleBody — splits an AI item string into { title, body }.
+     Strategy: take text up to the first " — ", ": ", or ". " as the
+     title (max 80 chars) and treat the rest as the body description.
+  ------------------------------------------------------------------ */
+  function splitTitleBody(raw) {
+    var str = (raw || "").trim();
+    /* Try em-dash or colon separator first */
+    var sep = str.match(/^(.{3,80}?)\s+[\u2014\u2013:]\s+(.+)$/s);
+    if (sep) return { title: sep[1].trim(), body: sep[2].trim() };
+    /* Fall back to first sentence break */
+    var dot = str.match(/^(.{10,80}[.!?])\s+(.+)$/s);
+    if (dot) return { title: dot[1].trim(), body: dot[2].trim() };
+    /* Short item — just a title, no separate body */
+    return { title: str, body: "" };
+  }
+
+  /* ------------------------------------------------------------------
+     fillParagraph — renders AI prose with improved typography.
+     Handles:
+       • Double-newline paragraph breaks
+       • Inline bullet lines (-, *, •) inside a block → <ul><li>
+       • Bold (**text**) and italic via mdLite
+       • overflow-wrap protection
+  ------------------------------------------------------------------ */
   function fillParagraph(container, text) {
-    var paragraphs = text.split(/\n{2,}/).filter(Boolean);
-    if (!paragraphs.length) paragraphs = [text];
-    container.innerHTML = paragraphs.map(function (p) { return "<p>" + mdLite(p.trim()) + "</p>"; }).join("");
+    var blocks = text.split(/\n{2,}/).filter(Boolean);
+    if (!blocks.length) blocks = [text];
+
+    container.innerHTML = blocks.map(function (block) {
+      var lines = block.split("\n");
+      var bulletLines = lines.filter(function (l) { return /^[-*\u2022]\s+/.test(l.trim()); });
+
+      if (bulletLines.length && bulletLines.length === lines.filter(Boolean).length) {
+        /* Pure bullet block → <ul> */
+        var items = bulletLines.map(function (l) {
+          return "<li>" + mdLite(l.replace(/^[-*\u2022]\s+/, "").trim()) + "</li>";
+        }).join("");
+        return "<ul class=\"rp-list\">" + items + "</ul>";
+      }
+
+      /* Mixed or prose block → <p> */
+      return "<p>" + mdLite(block.trim()) + "</p>";
+    }).join("");
   }
 
   function renderResults(analysisText) {
@@ -356,13 +448,13 @@
     }
 
     toggleCard("resumeStrengthsCard", parsed.strengths.length, function () {
-      fillTagList(document.getElementById("resumeStrengths"), parsed.strengths, "✓");
+      fillInsightCards(document.getElementById("resumeStrengths"), parsed.strengths);
     });
     toggleCard("resumeWeaknessesCard", parsed.weaknesses.length, function () {
-      fillTagList(document.getElementById("resumeWeaknesses"), parsed.weaknesses, "⚠");
+      fillWarningCards(document.getElementById("resumeWeaknesses"), parsed.weaknesses);
     });
     toggleCard("resumeMissingSkillsCard", parsed.missingSkills.length, function () {
-      fillTagList(document.getElementById("resumeMissingSkills"), parsed.missingSkills, "+");
+      fillSkillCards(document.getElementById("resumeMissingSkills"), parsed.missingSkills);
     });
     toggleCard("resumeProjectsReviewCard", parsed.projectsReview, function () {
       fillParagraph(document.getElementById("resumeProjectsReview"), parsed.projectsReview);
