@@ -227,10 +227,14 @@
      ========================================================= */
 
   function handleSignup(details) {
+    // TODO: integrate real account creation (Flask route / Firebase)
+    console.log("handleSignup placeholder called with:", details);
     return new Promise((resolve) => setTimeout(resolve, 1200));
   }
 
   function handleGoogleSignup() {
+    // TODO: integrate real Google OAuth sign-up flow (Firebase / Flask)
+    console.log("handleGoogleSignup placeholder called");
     return new Promise((resolve) => setTimeout(resolve, 1000));
   }
 

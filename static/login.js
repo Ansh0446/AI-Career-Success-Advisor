@@ -467,6 +467,8 @@ import {
     credentials.password
 );
 
+console.log(userCredential.user);
+
 setTimeout(() => {
     window.location.href = "/";
 }, 1000);
@@ -525,6 +527,9 @@ return Promise.resolve();
 
     } catch (error) {
 
+        console.log(error.code);
+        console.log(error.message);
+
         let message = "Unable to create account.";
 
         switch (error.code) {
@@ -563,6 +568,9 @@ return Promise.resolve();
 
     } catch (error) {
 
+        console.log(error.code);
+        console.log(error.message);
+
         throw new Error("Google sign-in failed.");
     }
 
@@ -577,6 +585,9 @@ return Promise.resolve();
         return Promise.resolve();
 
     } catch (error) {
+
+        console.log(error.code);
+        console.log(error.message);
 
         let message = "Unable to send reset email.";
 

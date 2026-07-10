@@ -331,7 +331,7 @@ branchSelect.addEventListener("change", function () {
     var id = input.id;
     var val = parseFloat(input.value);
     if (id === "attendance") return val + "%";
-    return String(val);
+    return val % 1 === 0 ? String(val) : String(val);
   }
 
   function updateSliderFill(input) {
@@ -921,3 +921,6 @@ function animateHeroValue(element, target, suffix=""){
         }
     },15);
 }
+window.addEventListener("DOMContentLoaded", () => {
+    showHeroDefault();
+});

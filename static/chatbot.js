@@ -215,13 +215,15 @@
             <button data-act="delete" aria-label="Delete chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg></button>
           </div>`;
         row.addEventListener("click", (e) => {
-          if (e.target.closest("[data-act]")) return;
+          if (e.target.closest("[data-act]")) return; // handled below
+          // TODO: load conversation `item.id` from GET /history/<id>
           toggleSidebar(false);
         });
         row.querySelectorAll("[data-act]").forEach((btn) => {
           btn.addEventListener("click", (e) => {
             e.stopPropagation();
             const act = btn.dataset.act;
+            // TODO: wire to real endpoints — pin/rename/delete `item.id`
             if (act === "delete") row.remove();
           });
         });
@@ -249,6 +251,7 @@
     btn.addEventListener("click", () => {
       $$(".aca-seg-btn", btn.parentElement).forEach((b) => b.classList.remove("is-active"));
       btn.classList.add("is-active");
+      // TODO: persist preference (theme / font size / speech speed) client-side or via API
     });
   });
 
@@ -261,6 +264,7 @@
   });
 
   els.clearHistoryBtn.addEventListener("click", () => {
+    // TODO: call DELETE /history to clear all conversations
     renderHistory([]);
   });
 
@@ -304,6 +308,7 @@
       btn.className = "aca-chip";
       btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>${escapeHtml(chip.label)}`;
       btn.addEventListener("click", () => {
+        // TODO: clicking a memory chip could re-open the related panel/section
       });
       els.memoryChips.appendChild(btn);
     });
@@ -455,7 +460,9 @@
           const other = action === "like" ? "dislike" : "like";
           row.querySelector(`[data-action="${other}"]`).classList.remove("is-active");
           btn.classList.toggle("is-active");
+          // TODO: POST feedback to backend
         } else if (action === "retry") {
+          // TODO: re-send the previous user message to /chat for a fresh response
           appendTypingIndicator();
           setTimeout(() => {
             removeTypingIndicator();
@@ -485,6 +492,10 @@
 
     appendTypingIndicator();
 
+    // TODO — replace this mock with:
+    // fetch('/chat', { method: 'POST', headers: {'Content-Type':'application/json'},
+    //   body: JSON.stringify({ message: text, history_id: state.historyId }) })
+    //   .then(r => r.json()).then(data => { ...appendAiMessage(data.reply)... })
     fetchMockReply(text)
       .then((reply) => {
         removeTypingIndicator();
@@ -649,6 +660,7 @@
 
       item.querySelector(".aca-file-remove").addEventListener("click", () => item.remove());
 
+      // TODO: replace with a real upload — e.g. POST /upload-resume via FormData, tracking XHR progress
       const bar = progressWrap.querySelector(".aca-file-progress-bar");
       let pct = 0;
       const interval = setInterval(() => {

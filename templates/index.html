@@ -61,7 +61,7 @@
       <li><a href="#home" class="nav-link active">Home</a></li>
       <li><a href="#predictor" class="nav-link">Predictor</a></li>
       <li><a href="#mentor" class="nav-link">AI Mentor</a></li>
-      <li><a href="#resumeAnalyzer" class="nav-link">Resume Analyzer</a></li>
+      <a href="#resumeAnalyzer">Resume Analyzer</a>
       <li><a href="#resources" class="nav-link">Resources</a></li>
       <li><a href="#about" class="nav-link">About</a></li>
     </ul>
@@ -326,7 +326,7 @@
           <h3 class="card-title">Track record</h3>
           <div class="counter-grid">
             <div class="counter-field">
-              <label for="projects_count">Projects</label>
+              <label>Projects</label>
               <div class="counter-control">
                 <button type="button" class="counter-btn minus" data-target="projects_count" aria-label="Decrease">&minus;</button>
                 <input type="number" id="projects_count" name="projects_count" value="2" min="0" max="20" readonly inputmode="numeric">
@@ -334,7 +334,7 @@
               </div>
             </div>
             <div class="counter-field">
-              <label for="hackathons_count">Hackathons</label>
+              <label>Hackathons</label>
               <div class="counter-control">
                 <button type="button" class="counter-btn minus" data-target="hackathons_count" aria-label="Decrease">&minus;</button>
                 <input type="number" id="hackathons_count" name="hackathons_count" value="0" min="0" max="20" readonly inputmode="numeric">
@@ -342,7 +342,7 @@
               </div>
             </div>
             <div class="counter-field">
-              <label for="certifications_count">Certifications</label>
+              <label>Certifications</label>
               <div class="counter-control">
                 <button type="button" class="counter-btn minus" data-target="certifications_count" aria-label="Decrease">&minus;</button>
                 <input type="number" id="certifications_count" name="certifications_count" value="1" min="0" max="20" readonly inputmode="numeric">
@@ -350,7 +350,7 @@
               </div>
             </div>
             <div class="counter-field">
-              <label for="internships_count">Internships</label>
+              <label>Internships</label>
               <div class="counter-control">
                 <button type="button" class="counter-btn minus" data-target="internships_count" aria-label="Decrease">&minus;</button>
                 <input type="number" id="internships_count" name="internships_count" value="0" min="0" max="10" readonly inputmode="numeric">
@@ -358,7 +358,7 @@
               </div>
             </div>
             <div class="counter-field">
-              <label for="backlogs">Backlogs</label>
+              <label>Backlogs</label>
               <div class="counter-control">
                 <button type="button" class="counter-btn minus" data-target="backlogs" aria-label="Decrease">&minus;</button>
                 <input type="number" id="backlogs" name="backlogs" value="0" min="0" max="20" readonly inputmode="numeric">
@@ -677,7 +677,7 @@
         </div>
         <h4 class="resource-title">Sample Resume</h4>
         <p class="resource-desc">An ATS-friendly resume laid out for entry-level tech roles.</p>
-        <a class="btn btn-ghost btn-small" href="{{ url_for('static', filename='resources/Sample-Resume.pdf') }}" download>Download</a>
+        <a class="btn btn-ghost btn-small" href="{{ url_for('static', filename='resources/Sample-Resume.zip') }}" download>Download</a>
       </div>
 
       <div class="card glass resource-card reveal">
@@ -686,7 +686,7 @@
         </div>
         <h4 class="resource-title">Resume Templates</h4>
         <p class="resource-desc">Five clean, recruiter-tested layouts in editable format.</p>
-        <a class="btn btn-ghost btn-small" href="{{ url_for('static', filename='resources/Resume-Templates.zip') }}" download>Download</a>
+        <a class="btn btn-ghost btn-small" href="{{ url_for('static', filename='resources/resume-templates.zip') }}" download>Download</a>
       </div>
 
       <div class="card glass resource-card reveal">
@@ -713,7 +713,7 @@
         </div>
         <h4 class="resource-title">Interview Questions</h4>
         <p class="resource-desc">Frequently asked technical and HR questions by role.</p>
-        <a class="btn btn-ghost btn-small" href="{{ url_for('static', filename='resources/Interview-Questions.pdf') }}" download>Download</a>
+        <a class="btn btn-ghost btn-small" href="{{ url_for('static', filename='resources/interview-questions.pdf') }}" download>Download</a>
       </div>
 
       <div class="card glass resource-card reveal">
