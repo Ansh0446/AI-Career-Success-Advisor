@@ -30,8 +30,10 @@ le_branch = joblib.load("models/le_branch.pkl")
 le_goal = joblib.load("models/le_goal.pkl")
 le_role = joblib.load("models/le_role.pkl")
 le_sector = joblib.load("models/le_sector.pkl")
+le_specialization = joblib.load("models/le_specialization.pkl")
 le_academic = joblib.load("models/le_academic.pkl")
-
+print(le_degree.classes_)
+print("Branch Classes:", le_branch.classes_)
 # ==========================================================
 # YEAR MAPPING
 # ==========================================================
@@ -58,6 +60,29 @@ def home():
 @app.route("/login")
 def login():
     return render_template("login.html")
+
+# ==========================================================
+# PAGES
+# ==========================================================
+
+@app.route("/predictor")
+def predictor():
+    return render_template("predictor.html")
+
+
+@app.route("/mentor")
+def mentor():
+    return render_template("mentor.html")
+
+
+@app.route("/resume")
+def resume():
+    return render_template("resume.html")
+
+
+@app.route("/resources")
+def resources():
+    return render_template("resources.html")
 
 # ==========================================================
 # PREDICTION ROUTE
@@ -164,9 +189,24 @@ def predict():
             "certifications_count": int(
                 float(data["certifications_count"])
             ),
-
+            "open_source_contributions": int(
+                float(data["open_source_contributions"])
+            ),
+            "research_publications_count": int(
+                float(data["research_publications_count"])
+            ),
             "github_activity_score": int(
                 float(data["github_activity_score"])
+            ),
+            "cloud_deployment_score": int(
+                float(data["cloud_deployment_score"])
+            ),
+            "portfolio_website_score": int(
+                float(data["portfolio_website_score"])
+            ),
+
+            "interview_practice_score": int(
+                float(data["interview_practice_score"])
             ),
 
             "linkedin_activity_score": int(
@@ -179,6 +219,17 @@ def predict():
 
             "sql_score": int(
                 float(data["sql_score"])
+            ),
+            "math_foundation_score": int(
+                float(data["math_foundation_score"])
+            ),
+
+            "ai_tool_fluency_score": int(
+                float(data["ai_tool_fluency_score"])
+            ),
+
+            "english_proficiency_score": int(
+                float(data["english_proficiency_score"])
             ),
 
             "dsa_score": int(
@@ -212,6 +263,9 @@ def predict():
             "target_role": le_role.transform(
                 [data["target_role"]]
             )[0],
+            "specialization_track": le_specialization.transform(
+                [data["specialization_track"]]
+            )[0],
 
             "sector": le_sector.transform(
                 [data["sector"]]
@@ -235,21 +289,29 @@ def predict():
 
         academic_score = (
 
-            student["cgpa"] * 7 +
+        student["cgpa"] * 8 +
 
-            student["study_hours"] * 3 +
+        student["attendance"] * 0.10 +
 
-            student["self_learning_hours"] * 2 +
+        student["assignment_score"] * 0.25 +
 
-            student["projects_count"] * 2 +
+        student["internal_marks"] * 0.35 +
 
-            student["attendance"] * 0.05 -
+        student["study_hours"] * 2 +
 
-            student["backlogs"] * 8 -
+        student["self_learning_hours"] * 2 +
 
-            student["screen_time"]
+        student["math_foundation_score"] * 0.15 +
 
-        )
+        student["programming_score"] * 0.08 +
+
+        student["dsa_score"] * 0.08 -
+
+        student["backlogs"] * 8 -
+
+        student["screen_time"]
+
+    )
 
         # ==========================================================
         # EMPLOYABILITY MODEL INPUT

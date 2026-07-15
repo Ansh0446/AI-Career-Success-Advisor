@@ -1220,3 +1220,48 @@ gap:12px;
 font-size:15px;
 opacity:.95;
 }
+/* ==========================================================
+   Predictor Validation Highlight
+========================================================== */
+
+.slider-error{
+
+    box-shadow:
+        0 0 0 2px rgba(255,99,99,.9),
+        0 0 18px rgba(255,99,99,.35);
+
+    border-radius:20px;
+
+    animation:sliderShake .35s ease;
+
+}
+
+@keyframes sliderShake{
+
+0%{transform:translateX(0);}
+25%{transform:translateX(-3px);}
+50%{transform:translateX(3px);}
+75%{transform:translateX(-3px);}
+100%{transform:translateX(0);}
+
+}
+
+.field-error{
+    margin-top:6px;
+    font-size:.78rem;
+    color:#ff6b6b;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    animation:fadeIn .2s ease;
+}
+
+.field-invalid{
+    border-color:#ff6b6b !important;
+    box-shadow:0 0 0 3px rgba(255,107,107,.15);
+}
+
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(-3px);}
+    to{opacity:1;transform:none;}
+}

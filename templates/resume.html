@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Career Success Advisor</title>
+<meta name="description" content="Predict academic performance, employability score, placement probability and generate personalized AI career roadmaps.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='resume_section.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='chatbot.css') }}">
+</head>
+<body>
+<div id="aiOverlay" class="ai-overlay hidden">
+    <div class="ai-popup">
+        <div class="ai-icon">
+            🤖
+        </div>
+        <h2>AI Analysis in Progress</h2>
+        <div class="progress-bar">
+            <div
+                id="aiProgressFill"
+                class="progress-fill">
+            </div>
+        </div>
+        <div
+            id="aiPercent"
+            class="progress-percent">
+            0%
+        </div>
+        <div class="ai-steps">
+            <div id="step1">⏳ Collecting Academic Profile</div>
+            <div id="step2">⏳ Processing Resume</div>
+            <div id="step3">⏳ Running ML Models</div>
+            <div id="step4">⏳ Predicting Career</div>
+            <div id="step5">⏳ Building Roadmap</div>
+
+        </div>
+    </div>
+</div>
+<canvas id="bg-network"></canvas>
+
+<!-- ============ NAVBAR ============ -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="/" class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+          <circle cx="12" cy="12" r="2.6" fill="currentColor"/>
+        </svg>
+      </span>
+      <span class="brand-name">Career<span class="brand-accent">AI</span></span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="/" class="nav-link">Home</a></li>
+      <li><a href="/predictor" class="nav-link">Predictor</a></li>
+      <li><a href="/mentor" class="nav-link">AI Mentor</a></li>
+      <li>
+          <a href="/resume" class="nav-link active">Resume Analyzer</a>
+      </li>
+      <li><a href="/resources" class="nav-link">Resources</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <a href="{{ url_for('login') }}"
+   class="btn btn-primary nav-login-btn"
+   id="authButton">
+    Login
+</a>
+      <button class="hamburger" id="hamburger" type="button" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main>
+<section class="resume-section" id="resumeAnalyzer">
+  <div class="resume-section-inner">
+
+    <p class="resume-eyebrow resume-reveal">AI-Powered Review</p>
+    <h2 class="resume-title resume-reveal">Resume Analyzer</h2>
+    <p class="resume-subtitle resume-reveal">
+      Drop in your resume and get an instant ATS score, gap analysis and concrete fixes — straight from the model.
+    </p>
+
+    <!-- ============ UPLOAD CARD ============ -->
+    <div class="resume-card resume-glass resume-upload-card resume-reveal">
+
+      <div
+        class="resume-dropzone"
+        id="resumeDropzone"
+        role="button"
+        tabindex="0"
+        aria-label="Upload your resume as a PDF"
+      >
+        <div class="resume-dropzone-icon" aria-hidden="true">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3v12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <path d="M7.5 8L12 3.3 16.5 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="resume-dropzone-title">Drag &amp; drop your resume here</p>
+        <p class="resume-dropzone-sub">PDF only &middot; up to 10MB</p>
+
+        <button type="button" class="resume-btn resume-btn-ghost" id="resumeChooseBtn">
+          Choose Resume
+        </button>
+        <input type="file" id="resumeFileInput" accept=".pdf,application/pdf" hidden>
+      </div>
+
+      <!-- Selected file preview -->
+      <div class="resume-file-info" id="resumeFileInfo" hidden>
+        <div class="resume-file-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M7 3h7l4 4v14H7V3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M14 3v4h4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="resume-file-meta">
+          <span class="resume-file-name" id="resumeFileName">resume.pdf</span>
+          <span class="resume-file-size" id="resumeFileSize">0 KB</span>
+        </div>
+        <button type="button" class="resume-file-remove" id="resumeRemoveFile" aria-label="Remove selected file">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <!-- Inline error -->
+      <div class="resume-error-banner" id="resumeErrorBanner" role="alert" hidden></div>
+
+      <!-- Upload progress -->
+      <div class="resume-progress-wrap" id="resumeProgressWrap" hidden>
+        <div class="resume-progress-label">
+          <span>Uploading resume&hellip;</span>
+          <span class="mono" id="resumeProgressPercent">0%</span>
+        </div>
+        <div class="resume-progress-track">
+          <div class="resume-progress-fill" id="resumeProgressFill"></div>
+        </div>
+      </div>
+
+      <!-- Backend processing spinner -->
+      <div class="resume-processing" id="resumeProcessing" hidden aria-live="polite">
+        <span class="resume-spinner" aria-hidden="true"></span>
+        <span id="resumeProcessingText">Analyzing your resume with AI&hellip;</span>
+      </div>
+
+      <div class="resume-action-bar">
+        <button type="button" class="resume-btn resume-btn-primary resume-btn-glow resume-btn-large" id="resumeAnalyzeBtn" disabled>
+          <span class="resume-btn-label">Analyze Resume</span>
+          <span class="resume-btn-spinner" aria-hidden="true"></span>
+        </button>
+        <p class="resume-action-hint">We only read the file to generate your analysis *nothing is stored here.* </p>
+      </div>
+    </div>
+
+    <!-- ============ RESULTS ============ -->
+    <div class="resume-results" id="resumeResults" hidden>
+
+      <div class="resume-results-grid">
+
+        <div class="resume-card resume-glass resume-result-card resume-reveal" id="resumeAtsCard">
+          <h3 class="resume-card-title">ATS Score</h3>
+          <div class="resume-gauge-wrap">
+            <svg viewBox="0 0 140 140" class="resume-gauge-svg">
+              <circle cx="70" cy="70" r="58" class="resume-gauge-track"></circle>
+              <circle cx="70" cy="70" r="58" class="resume-gauge-fill" id="resumeAtsCircle"></circle>
+            </svg>
+            <div class="resume-gauge-center">
+              <span class="resume-gauge-value mono" id="resumeAtsValue">0</span>
+              <span class="resume-gauge-max">/ 100</span>
+            </div>
+          </div>
+          <div class="resume-score-badge" id="resumeAtsBadge">
+            <span class="resume-score-dot"></span>
+            <span id="resumeAtsBadgeText">&mdash;</span>
+          </div>
+        </div>
+
+        <div class="resume-card resume-glass resume-result-card resume-reveal" id="resumeStrengthsCard">
+          <h3 class="resume-card-title">Strengths</h3>
+          <div class="resume-insight-list" id="resumeStrengths"></div>
+        </div>
+
+        <div class="resume-card resume-glass resume-result-card resume-reveal" id="resumeWeaknessesCard">
+          <h3 class="resume-card-title">Weaknesses</h3>
+          <div class="resume-warning-list" id="resumeWeaknesses"></div>
+        </div>
+
+        <div class="resume-card resume-glass resume-result-card resume-reveal" id="resumeMissingSkillsCard">
+          <h3 class="resume-card-title">Missing Skills</h3>
+          <div class="resume-skill-list" id="resumeMissingSkills"></div>
+        </div>
+
+        <div class="resume-card resume-glass resume-result-card resume-span-2 resume-reveal" id="resumeProjectsReviewCard">
+          <h3 class="resume-card-title">Projects Review</h3>
+          <div class="resume-paragraph" id="resumeProjectsReview"></div>
+        </div>
+
+        <div class="resume-card resume-glass resume-result-card resume-reveal" id="resumeFormattingCard">
+          <h3 class="resume-card-title">Resume Formatting</h3>
+          <div class="resume-paragraph" id="resumeFormatting"></div>
+        </div>
+
+        <div class="resume-card resume-glass resume-result-card resume-reveal" id="resumeInterviewReadinessCard">
+          <h3 class="resume-card-title">Interview Readiness</h3>
+          <div class="resume-paragraph" id="resumeInterviewReadiness"></div>
+        </div>
+
+        <div class="resume-card resume-glass resume-result-card resume-span-3 resume-reveal" id="resumeFinalSuggestionsCard">
+          <h3 class="resume-card-title">Final Suggestions</h3>
+          <ul class="resume-suggestion-list" id="resumeFinalSuggestions"></ul>
+        </div>
+
+        <!-- Shown only if the AI response couldn't be split into sections -->
+        <div class="resume-card resume-glass resume-result-card resume-span-3 resume-reveal" id="resumeRawCard" hidden>
+          <h3 class="resume-card-title">Full Analysis</h3>
+          <div class="resume-paragraph" id="resumeRawAnalysis"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="brand-name">Career<span class="brand-accent">AI</span></span>
+      <p>Built to make career direction a little less guesswork, a little more signal.</p>
+      <p>Powered by Flask • Machine Learning • Google Gemini AI</p>
+    </div>
+
+    <div class="footer-links">
+      <div class="footer-col">
+        <h5>Navigate</h5>
+        <a href="/">Home</a>
+        <a href="/predictor">Predictor</a>
+        <a href="/mentor">AI Mentor</a>
+        <a href="/resources">Resources</a>
+      </div>
+      <div class="footer-col">
+        <h5>Project</h5>
+        <a href="/">About</a>
+        <a href="/resources">Resources</a>
+      </div>
+    </div>
+
+<div class="footer-social">
+
+  <!-- GitHub -->
+  <a href="https://github.com/Ansh0446"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="GitHub"
+     class="social-icon">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12c0 4.4 2.9 8.1 6.8 9.4-.1-.7-.2-1.9 0-2.7.2-.8 1.3-5.2 1.3-5.2s-.3-.7-.3-1.6c0-1.5.9-2.6 2-2.6.9 0 1.4.7 1.4 1.6 0 1-.6 2.4-1 3.7-.2 1 .5 1.8 1.5 1.8 1.8 0 3.1-2.3 3.1-5 0-2.1-1.5-3.6-3.7-3.6-2.5 0-4 1.9-4 3.8 0 .7.2 1.2.5 1.6.2.2.2.3.1.5l-.3 1c-.1.3-.3.4-.6.2-1.1-.5-1.7-2-1.7-3.2 0-2.6 2.2-5.7 6.5-5.7 3.5 0 5.9 2.5 5.9 5.2 0 3.6-2 6.3-5 6.3-1 0-1.9-.5-2.2-1.2 0 0-.5 2-.6 2.4-.2.6-.6 1.4-.9 1.9 1 .3 2 .5 3.1.5 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+  </a>
+
+  <!-- LinkedIn -->
+  <a href="https://www.linkedin.com/in/ansh-banga-775275330/"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="LinkedIn"
+     class="social-icon">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.6 4.1 5.5 3 5.5S1 4.6 1 3.5 1.9 1.5 3 1.5s1.98.9 1.98 2zM1.3 8.4h3.4V23H1.3V8.4zM8.7 8.4h3.3v2h.05c.46-.87 1.6-1.8 3.3-1.8 3.5 0 4.15 2.3 4.15 5.3V23h-3.4v-6.9c0-1.65-.03-3.77-2.3-3.77-2.3 0-2.65 1.8-2.65 3.65V23H8.7V8.4z"/></svg>
+  </a>
+
+  <!-- Email -->
+  <a href="mailto:anshbanga4@gmail.com"
+     aria-label="Email"
+     class="social-icon">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 6h18v12H3V6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+  </a>
+
+</div>
+  <div class="footer-bottom">
+    <p>&copy; <span id="footerYear"></span> Ansh Banga. All Rights Reserved.</p>
+  </div>
+</footer>
+<div class="aca-root" id="acaRoot">
+
+  <!-- ============ FLOATING LAUNCH BUTTON ============ -->
+  <button class="aca-launcher aca-ripple" id="acaLauncher" aria-label="Open AI Career Advisor chat" aria-expanded="false">
+    <span class="aca-online-dot" aria-hidden="true"></span>
+    <span class="aca-badge" id="acaBadge" hidden>1</span>
+    <svg class="aca-icon-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg class="aca-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    <span class="aca-tooltip">Ask AI Career Advisor</span>
+  </button>
+
+  <!-- ============ CHAT WINDOW ============ -->
+  <section class="aca-window" id="acaWindow" role="dialog" aria-label="AI Career Advisor chat window" aria-hidden="true">
+
+    <!-- History sidebar -->
+    <aside class="aca-sidebar" id="acaSidebar" aria-label="Chat history">
+      <div class="aca-sidebar-header">
+        <input class="aca-sidebar-search" type="search" placeholder="Search chats..." id="acaHistorySearch" aria-label="Search chat history">
+        <button class="aca-icon-btn" id="acaSidebarClose" aria-label="Close history">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="aca-sidebar-body" id="acaHistoryList">
+        <!-- Populated by chatbot.js from GET /history. Grouped example structure: -->
+        <div class="aca-sidebar-group-label">Today</div>
+        <!-- <div class="aca-history-item">...</div> -->
+
+        <div class="aca-sidebar-group-label">Yesterday</div>
+        <div class="aca-sidebar-group-label">Last 7 Days</div>
+
+        <div class="aca-empty-state" id="acaHistoryEmpty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8v4l3 3M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/></svg>
+          No conversations yet
+        </div>
+      </div>
+    </aside>
+
+    <div class="aca-window-main">
+
+      <!-- Offline banner (hidden by default, toggled by chatbot.js on 'offline' event) -->
+      <div class="aca-banner" id="acaOfflineBanner" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.58 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+        You're offline — messages will send once reconnected
+      </div>
+
+      <!-- Header -->
+      <header class="aca-header">
+        <button class="aca-icon-btn" id="acaHistoryToggle" aria-label="Open chat history">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+
+        <div class="aca-orb" id="acaHeaderOrb" aria-hidden="true"></div>
+
+        <div class="aca-header-info">
+          <div class="aca-header-title">
+            AI Career Advisor <span class="aca-dot" aria-hidden="true"></span>
+          </div>
+          <div class="aca-header-subtitle">
+            <span>Powered by Gemini AI</span>
+            <span class="aca-voice-status" id="acaVoiceStatus"><span class="aca-mini-dot"></span>Voice idle</span>
+          </div>
+        </div>
+
+        <div class="aca-header-actions">
+          <button class="aca-icon-btn" id="acaClearChat" aria-label="Clear chat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+          </button>
+          <button class="aca-icon-btn" id="acaSettingsToggle" aria-label="Open settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+          </button>
+          <button class="aca-icon-btn" id="acaMinimize" aria-label="Minimize chat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg>
+          </button>
+          <button class="aca-icon-btn" id="acaClose" aria-label="Close chat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Personalized AI context panel -->
+      <div class="aca-context" id="acaContext">
+        <button class="aca-context-toggle" id="acaContextToggle" aria-expanded="false">
+          <span>Your career context</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="aca-context-body">
+          <div class="aca-context-grid" id="acaContextGrid">
+            <!-- Values populated from Flask/Firebase at runtime. data-empty="true" shows the placeholder style. -->
+            <div class="aca-context-item"><div class="aca-ctx-label">Prediction</div><div class="aca-ctx-value" data-field="prediction" data-empty="true">Not available yet</div></div>
+            <div class="aca-context-item"><div class="aca-ctx-label">Academic Category</div><div class="aca-ctx-value" data-field="academicCategory" data-empty="true">—</div></div>
+            <div class="aca-context-item"><div class="aca-ctx-label">Employability Score</div><div class="aca-ctx-value" data-field="employabilityScore" data-empty="true">—</div></div>
+            <div class="aca-context-item"><div class="aca-ctx-label">Placement Probability</div><div class="aca-ctx-value" data-field="placementProbability" data-empty="true">—</div></div>
+            <div class="aca-context-item"><div class="aca-ctx-label">Target Role</div><div class="aca-ctx-value" data-field="targetRole" data-empty="true">Not set</div></div>
+            <div class="aca-context-item"><div class="aca-ctx-label">Resume</div><div class="aca-ctx-value" data-field="resumeStatus" data-empty="true">Not uploaded</div></div>
+            <div class="aca-context-item"><div class="aca-ctx-label">ATS Score</div><div class="aca-ctx-value" data-field="atsScore" data-empty="true">—</div></div>
+            <div class="aca-context-item"><div class="aca-ctx-label">Latest Roadmap</div><div class="aca-ctx-value" data-field="latestRoadmap" data-empty="true">None generated</div></div>
+            <div class="aca-context-item"><div class="aca-ctx-label">Learning Progress</div><div class="aca-ctx-value" data-field="learningProgress" data-empty="true">—</div></div>
+            <div class="aca-context-item"><div class="aca-ctx-label">Projects</div><div class="aca-ctx-value" data-field="projects" data-empty="true">—</div></div>
+            <div class="aca-context-item"><div class="aca-ctx-label">Strengths</div><div class="aca-ctx-value" data-field="strengths" data-empty="true">—</div></div>
+            <div class="aca-context-item"><div class="aca-ctx-label">Weaknesses</div><div class="aca-ctx-value" data-field="weaknesses" data-empty="true">—</div></div>
+          </div>
+
+          <!-- Memory chips -->
+          <div class="aca-memory" id="acaMemoryChips">
+            <!-- Populated by chatbot.js; example markup for one chip: -->
+            <!--
+            <button class="aca-chip" data-memory="resume">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+              Resume Uploaded
+            </button>
+            -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick action rail -->
+      <div class="aca-quick-rail" id="acaQuickRail" aria-label="Quick actions">
+        <button class="aca-quick-card" data-action="analyze_resume">Analyze Resume</button>
+        <button class="aca-quick-card" data-action="generate_roadmap">Generate Roadmap</button>
+        <button class="aca-quick-card" data-action="improve_ats">Improve ATS Score</button>
+        <button class="aca-quick-card" data-action="mock_interview">Mock Interview</button>
+        <button class="aca-quick-card" data-action="career_advice">Career Advice</button>
+        <button class="aca-quick-card" data-action="ai_projects">AI Project Ideas</button>
+        <button class="aca-quick-card" data-action="dsa_planner">DSA Planner</button>
+        <button class="aca-quick-card" data-action="explain_ml">Explain ML Topic</button>
+        <button class="aca-quick-card" data-action="github_review">GitHub Review</button>
+        <button class="aca-quick-card" data-action="linkedin_review">LinkedIn Review</button>
+      </div>
+
+      <!-- Messages -->
+      <div class="aca-messages" id="acaMessages" aria-live="polite">
+
+        <!-- Welcome screen: chatbot.js hides this once the first message is sent -->
+        <div class="aca-welcome" id="acaWelcome">
+          <div class="aca-welcome-orb" aria-hidden="true"></div>
+          <h2>Hi 👋 I'm your AI Career Success Advisor</h2>
+          <p>I can help you with career guidance, resume analysis, ATS optimization, learning roadmaps, placement prep, and more.</p>
+          <ul class="aca-welcome-list">
+            <li>Career Guidance</li>
+            <li>Resume Analysis</li>
+            <li>ATS Optimization</li>
+            <li>Learning Roadmaps</li>
+            <li>Placement Preparation</li>
+            <li>Interview Practice</li>
+            <li>AI Project Ideas</li>
+            <li>Skill Gap Analysis</li>
+            <li>Certification Suggestions</li>
+            <li>Internship Guidance</li>
+          </ul>
+          <div class="aca-suggestions">
+            <button class="aca-suggest-card" data-prompt="Review my resume and point out what to improve">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+              Review my Resume
+            </button>
+            <button class="aca-suggest-card" data-prompt="Generate a personalized AI learning roadmap for me">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+              Generate AI Roadmap
+            </button>
+            <button class="aca-suggest-card" data-prompt="How can I improve my resume's ATS score?">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+              Improve ATS Score
+            </button>
+            <button class="aca-suggest-card" data-prompt="Suggest some impressive AI project ideas for my resume">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+              Suggest AI Projects
+            </button>
+            <button class="aca-suggest-card" data-prompt="Help me prepare for placements">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-9M14 17H5M17 3v4M7 17v4M3 7h4M17 21v-4"/></svg>
+              Placement Preparation
+            </button>
+            <button class="aca-suggest-card" data-prompt="Start a mock interview with me">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
+              Mock Interview
+            </button>
+          </div>
+        </div>
+
+        <!-- Example message markup for reference (chatbot.js clones/generates this pattern) -->
+        <!--
+        <div class="aca-msg is-ai">
+          <div class="aca-msg-avatar"></div>
+          <div class="aca-msg-col">
+            <div class="aca-bubble"><p>Response text with <strong>markdown</strong> support.</p></div>
+            <div class="aca-msg-meta">
+              <span>10:24 AM</span>
+              <div class="aca-msg-actions">
+                <button data-action="copy" aria-label="Copy response">...</button>
+                <button data-action="like" aria-label="Like response">...</button>
+                <button data-action="dislike" aria-label="Dislike response">...</button>
+                <button data-action="retry" aria-label="Regenerate response">...</button>
+                <button data-action="speak" aria-label="Read aloud">...</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        -->
+      </div>
+
+      <!-- Voice overlay -->
+      <div class="aca-voice-overlay" id="acaVoiceOverlay">
+        <div class="aca-waveform" id="acaWaveform" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="aca-voice-label" id="acaVoiceLabel">Listening...</div>
+        <div class="aca-voice-sub" id="acaVoiceSub">Speak now, tap stop when you're done</div>
+        <div class="aca-voice-controls">
+          <button id="acaVoiceStop">Stop</button>
+          <button class="aca-primary" id="acaVoiceUse">Use this</button>
+        </div>
+      </div>
+
+      <!-- Input area -->
+      <div class="aca-input-area">
+
+        <!-- Attachment popup -->
+        <div class="aca-attach-popup" id="acaAttachPopup">
+          <div class="aca-attach-dropzone" id="acaDropzone">
+            Drag & drop files here, or choose a type below
+          </div>
+          <div class="aca-attach-types">
+            <button class="aca-attach-type" data-filetype="resume">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+              Resume (PDF)
+            </button>
+            <button class="aca-attach-type" data-filetype="docx">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+              DOCX File
+            </button>
+            <button class="aca-attach-type" data-filetype="image">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+              Image
+            </button>
+            <button class="aca-attach-type" data-filetype="portfolio">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              Portfolio
+            </button>
+            <button class="aca-attach-type" data-filetype="cover_letter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="m4 4 8 8 8-8"/></svg>
+              Cover Letter
+            </button>
+            <button class="aca-attach-type" data-filetype="certificate">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></svg>
+              Certificate
+            </button>
+          </div>
+          <input type="file" id="acaFileInput" multiple hidden>
+          <div class="aca-file-list" id="acaFileList"></div>
+        </div>
+
+        <div class="aca-input-shell">
+          <button class="aca-icon-btn" id="acaAttachToggle" aria-label="Attach file">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          </button>
+
+          <textarea
+            class="aca-input"
+            id="acaInput"
+            rows="1"
+            maxlength="2000"
+            placeholder="Ask anything about your career..."
+            aria-label="Message AI Career Advisor"></textarea>
+
+          <div class="aca-input-actions">
+            <button class="aca-icon-btn aca-mic-btn" id="acaMicBtn" aria-label="Voice input">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
+            </button>
+            <button class="aca-send-btn aca-ripple" id="acaSendBtn" aria-label="Send message" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="aca-input-footer">
+          <span id="acaCharCount">0 / 2000</span>
+          <span>Shift + Enter for a new line</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings panel -->
+    <div class="aca-scrim" id="acaScrim"></div>
+    <aside class="aca-settings" id="acaSettings" aria-label="Settings">
+      <div class="aca-settings-header">
+        Settings
+        <button class="aca-icon-btn" id="acaSettingsClose" aria-label="Close settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="aca-settings-body">
+        <div class="aca-setting-row">
+          <label>Theme</label>
+          <div class="aca-setting-control" id="acaThemeControl">
+            <button class="aca-seg-btn is-active" data-theme="dark">Dark</button>
+            <button class="aca-seg-btn" data-theme="midnight">Midnight</button>
+          </div>
+        </div>
+        <div class="aca-setting-row">
+          <label>Font size</label>
+          <div class="aca-setting-control" id="acaFontControl">
+            <button class="aca-seg-btn" data-font="sm">Small</button>
+            <button class="aca-seg-btn is-active" data-font="md">Medium</button>
+            <button class="aca-seg-btn" data-font="lg">Large</button>
+          </div>
+        </div>
+        <div class="aca-setting-row">
+          <div class="aca-switch">
+            <label>Voice responses</label>
+            <div class="aca-switch-track" id="acaVoiceToggleSetting" role="switch" aria-checked="false"></div>
+          </div>
+        </div>
+        <div class="aca-setting-row">
+          <label>Speech speed</label>
+          <div class="aca-setting-control" id="acaSpeedControl">
+            <button class="aca-seg-btn" data-speed="0.75">0.75x</button>
+            <button class="aca-seg-btn is-active" data-speed="1">1x</button>
+            <button class="aca-seg-btn" data-speed="1.5">1.5x</button>
+          </div>
+        </div>
+        <div class="aca-setting-row">
+          <div class="aca-switch">
+            <label>Auto-read responses</label>
+            <div class="aca-switch-track" id="acaAutoReadToggle" role="switch" aria-checked="false"></div>
+          </div>
+        </div>
+        <div class="aca-setting-row">
+          <div class="aca-switch">
+            <label>Notifications</label>
+            <div class="aca-switch-track is-on" id="acaNotifToggle" role="switch" aria-checked="true"></div>
+          </div>
+        </div>
+        <div class="aca-setting-row">
+          <button class="aca-settings-btn" id="acaExportChat">Export chat</button>
+          <button class="aca-settings-btn is-danger" id="acaClearHistoryBtn">Clear all history</button>
+        </div>
+      </div>
+    </aside>
+  </section>
+</div>
+
+<script type="module" src="{{ url_for('static', filename='script.js') }}"></script>
+<script src="{{ url_for('static', filename='loadResources.js') }}"></script>
+<script src="{{ url_for('static', filename='resume_section.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='firebase.js') }}"></script>
+<script src="{{ url_for('static', filename='chatbot.js') }}"></script>
+</body>
+</html>

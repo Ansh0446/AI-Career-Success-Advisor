@@ -18,6 +18,7 @@ import numpy as np
 # -------------------------
 
 X_emp = df.drop(columns=[
+    "student_id",
     "employability_score",
     "placement_probability",
     "sector"

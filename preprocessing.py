@@ -3,7 +3,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 
 # Load Dataset
-df = pd.read_csv("dataset/datasetv5.csv")
+df = pd.read_csv("dataset/dataset_v7.csv")
 
 # ------------------------
 # Label Encoding
@@ -25,6 +25,12 @@ df["target_role"] = le_role.fit_transform(df["target_role"])
 le_sector = LabelEncoder()
 df["sector"] = le_sector.fit_transform(df["sector"])
 
+# NEW COLUMN
+le_specialization = LabelEncoder()
+df["specialization_track"] = le_specialization.fit_transform(
+    df["specialization_track"]
+)
+
 # Target Encoding
 le_academic = LabelEncoder()
 df["academic_category"] = le_academic.fit_transform(df["academic_category"])
@@ -34,6 +40,7 @@ df["academic_category"] = le_academic.fit_transform(df["academic_category"])
 # ------------------------
 
 X = df.drop(columns=[
+    "student_id",
     "academic_category",
     "academic_score",
     "employability_score",
@@ -74,6 +81,12 @@ joblib.dump(le_branch, "models/le_branch.pkl")
 joblib.dump(le_goal, "models/le_goal.pkl")
 joblib.dump(le_role, "models/le_role.pkl")
 joblib.dump(le_sector, "models/le_sector.pkl")
+joblib.dump(le_specialization, "models/le_specialization.pkl")
 joblib.dump(le_academic, "models/le_academic.pkl")
 
 print("Encoders Saved Successfully")
+
+for i, role in enumerate(le_role.classes_):
+    print(i, ":", role)
+
+print(df["target_role"].value_counts().sort_index())

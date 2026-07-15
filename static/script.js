@@ -186,12 +186,67 @@ if (footerYear) {
      5. Degree → Branch dynamic dropdown
   --------------------------------------------------------- */
   var BRANCH_MAP = {
-    "B.Tech": ["AI&DS", "CSE", "IT", "ECE", "Mechanical", "Civil"],
-    "BCA": ["General", "Data Science", "Cyber Security", "Cloud Computing"],
-    "BBA": ["Finance", "Marketing", "HR", "Business Analytics"],
-    "B.Com": ["General", "Finance", "Accounting", "Taxation"],
-    "BA": ["Economics", "English", "Political Science", "Psychology"],
-    "Law": ["Criminal", "Corporate", "Civil", "Constitutional"],
+    "B.Tech/B.E.": [
+      "AI & Data Science",
+      "Computer Science",
+      "Information Technology",
+      "Electronics & Communication",
+      "Electrical Engineering",
+      "Mechanical Engineering",
+      "Civil Engineering",
+      "Chemical Engineering",
+      "Biotechnology",
+      "Robotics",
+      "Aerospace Engineering",
+      "Agricultural Engineering",
+      "Automobile Engineering",
+      "Environmental Engineering",
+      "Food Technology",
+      "Metallurgical Engineering",
+      "Textile Engineering",
+      "Electronics & Instrumentation",
+      "Mathematics & Computing"
+    ],
+
+    "BCA": [
+      "General",
+      "Data Science",
+      "Cyber Security",
+      "Cloud Computing"
+    ],
+
+    "BS (Data Science & AI)": [
+      "AI & Data Science",
+      "Statistics",
+      "Mathematics & Computing"
+    ],
+
+    "M.Tech/M.E.": [
+      "Computer Science",
+      "AI & Data Science",
+      "Information Technology",
+      "Electronics & Communication"
+    ],
+
+    "MCA": [
+      "Computer Science",
+      "Information Technology"
+    ],
+
+    "MSc": [
+      "Physics",
+      "Chemistry",
+      "Mathematics & Computing",
+      "Statistics"
+    ],
+
+    "PhD": [
+      "Computer Science",
+      "AI & Data Science",
+      "Physics",
+      "Chemistry",
+      "Economics"
+    ]
   };
 
   var degreeSelect = document.getElementById("degree");
@@ -324,6 +379,19 @@ branchSelect.addEventListener("change", function () {
     );
 
 });
+document.querySelectorAll("select").forEach(function(select){
+
+    select.addEventListener("change", function(){
+
+        this.classList.remove("field-invalid");
+
+        this.closest(".field")
+            ?.querySelector(".field-error")
+            ?.remove();
+
+    });
+
+});
   /* ---------------------------------------------------------
      6. Sliders — live values + filled track
   --------------------------------------------------------- */
@@ -342,16 +410,26 @@ branchSelect.addEventListener("change", function () {
     input.style.setProperty("--fill", pct + "%");
   }
 
-  document.querySelectorAll('input[type="range"].slider').forEach(function (input) {
+document.querySelectorAll('input[type="range"].slider').forEach(function (input) {
     var output = document.getElementById(input.id + "Value");
+    // Slider starts from minimum position
+    input.value = input.min;
     updateSliderFill(input);
-    if (output) output.textContent = formatSliderValue(input);
-
+    // User has not touched this slider yet
+    input.dataset.touched = "false";
+    // Show placeholder
+    if (output) {
+        output.textContent = "—";
+    }
     input.addEventListener("input", function () {
-      updateSliderFill(input);
-      if (output) output.textContent = formatSliderValue(input);
+        input.dataset.touched = "true";
+        updateSliderFill(input);
+        if (output) {
+            output.textContent = formatSliderValue(input);
+        }
+        input.classList.remove("slider-error");
     });
-  });
+});
 
   /* ---------------------------------------------------------
      7. Counters (plus / minus)
@@ -536,18 +614,66 @@ branchSelect.addEventListener("change", function () {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      // Native validation across both tabs (panels stay in DOM, just hidden)
-      var firstInvalid = form.querySelector(":invalid");
-      if (firstInvalid) {
-        var panel = firstInvalid.closest(".tab-panel");
-        if (panel && panel.hidden) {
-          var tabName = panel.getAttribute("data-panel");
-          var tabBtn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
-          if (tabBtn) tabBtn.click();
-        }
-        firstInvalid.reportValidity();
-        return;
-      }
+// Remove old validation messages
+document.querySelectorAll(".field-error").forEach(el => el.remove());
+document.querySelectorAll(".field-invalid").forEach(el => el.classList.remove("field-invalid"));
+
+var firstInvalid = form.querySelector(":invalid");
+
+if (firstInvalid) {
+    var panel = firstInvalid.closest(".tab-panel");
+
+    if (panel && panel.hidden) {
+        var tabName = panel.getAttribute("data-panel");
+        var tabBtn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
+        if (tabBtn) tabBtn.click();
+
+    }
+
+    firstInvalid.classList.add("field-invalid");
+    var field = firstInvalid.closest(".field");
+    if (field) {
+
+        field.insertAdjacentHTML(
+            "beforeend",
+            '<div class="field-error">⚠ This field is required.</div>'
+        );
+    }
+    firstInvalid.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+    firstInvalid.focus();
+    return;
+
+}
+// ================= Profile Validation =================
+
+const untouched = Array.from(document.querySelectorAll(".slider"))
+    .filter(slider => slider.dataset.touched !== "true");
+
+if (untouched.length > 0) {
+
+    untouched.forEach(slider => {
+        slider.classList.add("slider-error");
+    });
+
+    alert("Please complete your profile before analysis.");
+
+    untouched[0].scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+    return;
+}
+
+document.querySelectorAll(".slider").forEach(slider => {
+    slider.classList.remove("slider-error");
+});
+
+// ================================================
+
 var payload = collectFormData();
 setLoading(analyzeBtn, true);
 startAIProgress();
@@ -696,6 +822,47 @@ window.CareerAIContext = {
 
   if (roadmapBtn) {
     roadmapBtn.addEventListener("click", function () {
+
+      // ── Guard: require a completed prediction before generating a roadmap ──
+      if (resultsSection.hidden) {
+        var mentorTrigger = roadmapBtn.closest(".mentor-trigger");
+        var existingWarn  = mentorTrigger && mentorTrigger.querySelector(".mentor-warn");
+
+        if (!existingWarn && mentorTrigger) {
+          var warn = document.createElement("p");
+          warn.className = "mentor-warn";
+          warn.style.cssText = [
+            "margin:10px 0 0",
+            "font-size:.9rem",
+            "color:var(--orange)",
+            "animation:fadeIn .3s ease",
+          ].join(";");
+          warn.textContent = "\u26A0 Please complete the Career Predictor first so the AI Mentor can personalise your roadmap.";
+          mentorTrigger.appendChild(warn);
+
+          var warnTimer = setTimeout(function () {
+            if (warn.parentNode) warn.parentNode.removeChild(warn);
+          }, 4000);
+
+          warn._timer = warnTimer;
+        }
+
+        var predictor = document.getElementById("predictor");
+        if (predictor) {
+          predictor.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        return;
+      }
+
+      // Remove any stale warning before proceeding
+      mentorTrigger = roadmapBtn.closest(".mentor-trigger");
+      var staleWarn = mentorTrigger && mentorTrigger.querySelector(".mentor-warn");
+      if (staleWarn) {
+        clearTimeout(staleWarn._timer);
+        staleWarn.parentNode.removeChild(staleWarn);
+      }
+      // ─────────────────────────────────────────────────────────────────────
+
       setLoading(roadmapBtn, true);
       var targetRole = document.getElementById("target_role").value;
       var goal = document.getElementById("goal").value;
