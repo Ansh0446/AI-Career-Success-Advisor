@@ -6,7 +6,6 @@ import {
     onAuthStateChanged,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-
 import {
     doc,
     getDoc,
@@ -371,14 +370,14 @@ async function populateTargetRoles(degree, branch) {
           '<option selected disabled>Select Target Role</option>';
     });
   }
-branchSelect.addEventListener("change", function () {
-
-    populateTargetRoles(
-        degreeSelect.value,
-        branchSelect.value
-    );
-
-});
+if (branchSelect && degreeSelect) {
+    branchSelect.addEventListener("change", function () {
+        populateTargetRoles(
+            degreeSelect.value,
+            branchSelect.value
+        );
+    });
+}
 document.querySelectorAll("select").forEach(function(select){
 
     select.addEventListener("change", function(){
@@ -937,60 +936,74 @@ window.CareerAIContext = {
         });
     });
   }
-  const authButton = document.getElementById("authButton");
+onAuthStateChanged(auth, async (user) => {
 
-if (authButton) {
+    if (user) {
 
-    onAuthStateChanged(auth, async (user) => {
+        try {
 
-        if (user) {
-          const heroRef = doc(db, "users", user.uid);
+            const heroRef = doc(db, "users", user.uid);
+            const heroSnap = await getDoc(heroRef);
 
-try {
-    const heroSnap = await getDoc(heroRef);
+            if (heroSnap.exists() && heroSnap.data().hero) {
 
-    if (heroSnap.exists() && heroSnap.data().hero) {
-        const hero = heroSnap.data().hero;
+                const hero = heroSnap.data().hero;
 
-        showHeroDashboard(
-            hero.confidence,
-            hero.signals,
-            hero.recommendations
-        );
+                showHeroDashboard(
+                    hero.confidence,
+                    hero.signals,
+                    hero.recommendations
+                );
 
-    } else {
-        showHeroDefault();
-    }
+            } else {
 
-} catch (e) {
+                showHeroDefault();
 
-    console.error("Hero load failed:", e);
-    showHeroDefault();
+            }
 
-}
+        } catch (e) {
 
-            authButton.textContent = "Logout";
-            authButton.href = "#";
-            authButton.onclick = async (e) => {
-
-                e.preventDefault();
-                await signOut(auth);
-                window.location.href = "/login";
-
-            };
-
-        } else {
-
-            authButton.textContent = "Login";
+            console.error("Hero load failed:", e);
             showHeroDefault();
-            authButton.href = "/login";
-            authButton.onclick = null;
 
         }
 
-    });
+        if (window.ACAProfileMenu) {
 
-}
+            ACAProfileMenu.setUser({
+
+                name: user.displayName || user.email.split("@")[0],
+
+                email: user.email,
+
+                photoURL: user.photoURL || "",
+
+                plan: "free"
+
+            });
+
+            ACAProfileMenu.on("logout", async () => {
+                try {
+                    await signOut(auth);
+                    // Optional success message
+                    // showToast("Logged out successfully");
+                } catch (error) {
+                    console.error("Logout failed:", error);
+                }
+            });
+        }
+
+    } else {
+
+        showHeroDefault();
+
+        if (window.ACAProfileMenu) {
+
+            ACAProfileMenu.setGuest();
+
+        }
+    }
+});
 })();
 const aiOverlay=document.getElementById("aiOverlay");
 const aiFill=document.getElementById("aiProgressFill");
