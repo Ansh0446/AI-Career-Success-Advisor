@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='resume_section.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='chatbot.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='avatar-profile.css') }}">
 </head>
 <body>
 <div id="aiOverlay" class="ai-overlay hidden">
@@ -58,25 +59,180 @@
     </a>
 
     <ul class="nav-links" id="navLinks">
-      <li><a href="/" class="nav-link">Home</a></li>
+      <li><a href="/" class="nav-link active">Home</a></li>
       <li><a href="/predictor" class="nav-link">Predictor</a></li>
-      <li><a href="/mentor" class="nav-link active">AI Mentor</a></li>
-      <li>
-          <a href="/resume" class="nav-link">Resume Analyzer</a>
-      </li>
+      <li><a href="/mentor" class="nav-link">AI Mentor</a></li>
+      <li><a href="/resume" class="nav-link">Resume Analyzer</a></li>
       <li><a href="/resources" class="nav-link">Resources</a></li>
     </ul>
 
     <div class="nav-actions">
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
-        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg>
-        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-      </button>
-      <a href="{{ url_for('login') }}"
-   class="btn btn-primary nav-login-btn"
-   id="authButton">
-    Login
-</a>
+      <div class="apm-root" id="apmRoot" data-state="guest">
+
+  <!-- Trigger button: replaces theme-toggle + login button -->
+        <button
+            class="apm-trigger"
+            id="apmTrigger"
+            type="button"
+            aria-haspopup="menu"
+            aria-expanded="false"
+            aria-controls="apmPanel"
+            aria-label="Open account menu">
+            <span class="apm-avatar" id="apmAvatarSlot" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" class="apm-guest-icon">
+                <circle cx="12" cy="8" r="3.6" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M4.5 19.2c1.4-3.4 4.4-5.2 7.5-5.2s6.1 1.8 7.5 5.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            </span>
+            <span class="apm-status-dot" id="apmStatusDot" aria-hidden="true"></span>
+        </button>
+
+      <!-- Mobile scrim behind the panel -->
+        <div class="apm-scrim" id="apmScrim" hidden></div>
+
+      <!-- Dropdown / bottom-sheet panel -->
+        <div class="apm-panel" id="apmPanel" role="menu" aria-hidden="true" aria-label="Account menu">
+        <div class="apm-panel-inner" id="apmPanelInner">
+
+      <!-- ============ MAIN VIEW ============ -->
+        <div class="apm-view apm-view-main is-active" data-view="main">
+
+        <div class="apm-header">
+            <span class="apm-header-avatar" id="apmHeaderAvatar" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" class="apm-guest-icon">
+                    <circle cx="12" cy="8" r="3.6" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M4.5 19.2c1.4-3.4 4.4-5.2 7.5-5.2s6.1 1.8 7.5 5.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+            </span>
+            <span class="apm-header-text">
+                <strong class="apm-header-name" id="apmHeaderName">Guest User</strong>
+                <span class="apm-header-email" id="apmHeaderEmail" hidden></span>
+            </span>
+            <span class="apm-plan-badge" id="apmPlanBadge">Free Plan</span>
+        </div>
+
+        <div class="apm-divider"></div>
+
+        <div class="apm-menu">
+            <button class="apm-item" type="button" data-submenu="appearance">
+                <span class="apm-item-icon" aria-hidden="true">🎨</span>
+                <span class="apm-item-label">Appearance</span>
+                <span class="apm-item-chevron" aria-hidden="true">›</span>
+            </button>
+            <button class="apm-item" type="button" data-submenu="language">
+                <span class="apm-item-icon" aria-hidden="true">🌐</span>
+                <span class="apm-item-label">Language</span>
+                <span class="apm-item-chevron" aria-hidden="true">›</span>
+            </button>
+            <button class="apm-item" type="button" data-submenu="notifications">
+                <span class="apm-item-icon" aria-hidden="true">🔔</span>
+                <span class="apm-item-label">Notifications</span>
+                <span class="apm-item-chevron" aria-hidden="true">›</span>
+            </button>
+            <button class="apm-item" type="button" data-action="saved-reports">
+                <span class="apm-item-icon" aria-hidden="true">📄</span>
+                <span class="apm-item-label">Saved Reports</span>
+            </button>
+            <button class="apm-item apm-item-premium" type="button" data-action="go-premium">
+                <span class="apm-item-icon" aria-hidden="true">💎</span>
+                <span class="apm-item-label">Go Premium</span>
+            </button>
+            <button class="apm-item" type="button" data-action="feedback">
+                <span class="apm-item-icon" aria-hidden="true">💬</span>
+                <span class="apm-item-label">Feedback</span>
+            </button>
+            <button class="apm-item" type="button" data-action="about">
+                <span class="apm-item-icon" aria-hidden="true">ℹ️</span>
+                <span class="apm-item-label">About Project</span>
+            </button>
+        </div>
+
+        <div class="apm-divider"></div>
+
+        <div class="apm-footer">
+            <a class="apm-auth-btn apm-login-btn" id="apmLoginBtn" href="{{ url_for('login') }}">
+                <span class="apm-item-icon" aria-hidden="true">🔑</span> Login
+            </a>
+            <button class="apm-auth-btn apm-logout-btn" id="apmLogoutBtn" type="button" hidden>
+                <span class="apm-item-icon" aria-hidden="true">🚪</span> Logout
+            </button>
+        </div>
+      </div>
+
+      <!-- ============ APPEARANCE SUBMENU ============ -->
+      <div class="apm-view apm-view-sub" data-view="appearance">
+        <div class="apm-subheader">
+            <button class="apm-back-btn" type="button" data-back aria-label="Back to menu">‹</button>
+            <span>Appearance</span>
+        </div>
+        <div class="apm-menu">
+            <button class="apm-item apm-option" type="button" data-theme-option="light">
+                <span class="apm-item-icon" aria-hidden="true">☀️</span>
+                <span class="apm-item-label">Light</span>
+                <span class="apm-check" aria-hidden="true">✓</span>
+            </button>
+            <button class="apm-item apm-option" type="button" data-theme-option="dark">
+                <span class="apm-item-icon" aria-hidden="true">🌙</span>
+                <span class="apm-item-label">Dark</span>
+                <span class="apm-check" aria-hidden="true">✓</span>
+            </button>
+            <button class="apm-item apm-option" type="button" data-theme-option="system">
+                <span class="apm-item-icon" aria-hidden="true">🖥️</span>
+                <span class="apm-item-label">System</span>
+                <span class="apm-check" aria-hidden="true">✓</span>
+            </button>
+        </div>
+      </div>
+
+      <!-- ============ LANGUAGE SUBMENU ============ -->
+      <div class="apm-view apm-view-sub" data-view="language">
+        <div class="apm-subheader">
+            <button class="apm-back-btn" type="button" data-back aria-label="Back to menu">‹</button>
+            <span>Language</span>
+        </div>
+        <div class="apm-menu">
+            <button class="apm-item apm-option" type="button" data-lang-option="en">
+                <span class="apm-item-icon" aria-hidden="true">🇬🇧</span>
+                <span class="apm-item-label">English</span>
+                <span class="apm-check" aria-hidden="true">✓</span>
+            </button>
+            <button class="apm-item apm-option" type="button" data-lang-option="hi">
+                <span class="apm-item-icon" aria-hidden="true">🇮🇳</span>
+                <span class="apm-item-label">Hindi</span>
+                <span class="apm-check" aria-hidden="true">✓</span>
+            </button>
+        </div>
+      </div>
+
+      <!-- ============ NOTIFICATIONS SUBMENU ============ -->
+      <div class="apm-view apm-view-sub" data-view="notifications">
+        <div class="apm-subheader">
+            <button class="apm-back-btn" type="button" data-back aria-label="Back to menu">‹</button>
+            <span>Notifications</span>
+        </div>
+        <div class="apm-menu">
+            <div class="apm-item apm-switch-row">
+                <span class="apm-item-icon" aria-hidden="true">🔔</span>
+                <span class="apm-item-label">Enable Notifications</span>
+                <button class="apm-switch" type="button" role="switch" aria-checked="true" data-toggle="enable-notifications"></button>
+            </div>
+            <div class="apm-item apm-switch-row">
+                <span class="apm-item-icon" aria-hidden="true">📰</span>
+                <span class="apm-item-label">Weekly Career Updates</span>
+                <button class="apm-switch" type="button" role="switch" aria-checked="true" data-toggle="weekly-updates"></button>
+            </div>
+            <div class="apm-item apm-switch-row">
+                <span class="apm-item-icon" aria-hidden="true">🎯</span>
+                <span class="apm-item-label">Placement Alerts</span>
+                <button class="apm-switch" type="button" role="switch" aria-checked="false" data-toggle="placement-alerts"></button>
+            </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
       <button class="hamburger" id="hamburger" type="button" aria-label="Open menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -520,5 +676,7 @@
 <script src="{{ url_for('static', filename='resume_section.js') }}"></script>
 <script type="module" src="{{ url_for('static', filename='firebase.js') }}"></script>
 <script src="{{ url_for('static', filename='chatbot.js') }}"></script>
+<script src="{{ url_for('static', filename='avatar-profile.js') }}" defer></script>
+<script type="module" src="{{ url_for('static', filename='js/auth-manager.js') }}"></script>
 </body>
 </html>

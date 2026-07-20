@@ -1,11 +1,7 @@
 /* ============================================================
    AI Career Success Advisor — interactivity
    ============================================================ */
-import { auth, db } from "./firebase.js";
-import {
-    onAuthStateChanged,
-    signOut
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+import { db } from "./firebase.js";
 import {
     doc,
     getDoc,
@@ -936,74 +932,6 @@ window.CareerAIContext = {
         });
     });
   }
-onAuthStateChanged(auth, async (user) => {
-
-    if (user) {
-
-        try {
-
-            const heroRef = doc(db, "users", user.uid);
-            const heroSnap = await getDoc(heroRef);
-
-            if (heroSnap.exists() && heroSnap.data().hero) {
-
-                const hero = heroSnap.data().hero;
-
-                showHeroDashboard(
-                    hero.confidence,
-                    hero.signals,
-                    hero.recommendations
-                );
-
-            } else {
-
-                showHeroDefault();
-
-            }
-
-        } catch (e) {
-
-            console.error("Hero load failed:", e);
-            showHeroDefault();
-
-        }
-
-        if (window.ACAProfileMenu) {
-
-            ACAProfileMenu.setUser({
-
-                name: user.displayName || user.email.split("@")[0],
-
-                email: user.email,
-
-                photoURL: user.photoURL || "",
-
-                plan: "free"
-
-            });
-
-            ACAProfileMenu.on("logout", async () => {
-                try {
-                    await signOut(auth);
-                    // Optional success message
-                    // showToast("Logged out successfully");
-                } catch (error) {
-                    console.error("Logout failed:", error);
-                }
-            });
-        }
-
-    } else {
-
-        showHeroDefault();
-
-        if (window.ACAProfileMenu) {
-
-            ACAProfileMenu.setGuest();
-
-        }
-    }
-});
 })();
 const aiOverlay=document.getElementById("aiOverlay");
 const aiFill=document.getElementById("aiProgressFill");

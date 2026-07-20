@@ -470,7 +470,9 @@ import {
 console.log(userCredential.user);
 
 setTimeout(() => {
-    window.location.href = "/";
+    const redirectTo = sessionStorage.getItem("redirectAfterLogin") || "/";
+    sessionStorage.removeItem("redirectAfterLogin");
+    window.location.href = redirectTo;
 }, 1000);
 
 return Promise.resolve();
@@ -561,7 +563,9 @@ return Promise.resolve();
         await signInWithPopup(auth, googleProvider);
 
         setTimeout(() => {
-            window.location.href = "/";
+            const redirectTo = sessionStorage.getItem("redirectAfterLogin") || "/";
+            sessionStorage.removeItem("redirectAfterLogin");
+            window.location.href = redirectTo;
         }, 1000);
 
         return Promise.resolve();
